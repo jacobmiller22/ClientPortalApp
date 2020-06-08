@@ -41,8 +41,6 @@ module.exports = (app) => {
       async function uploadFiles() {
         await bucket.upload(req.file.path);
 
-        console.log("Josh is feckin ghey");
-
         const { originalname, size, mimetype, filename } = req.file;
 
         const file = new File({
@@ -58,6 +56,8 @@ module.exports = (app) => {
         } catch (err) {
           res.status(422).send(err);
         }
+
+        // Delete files off local server
       }
       uploadFiles().catch(console.error);
     }
