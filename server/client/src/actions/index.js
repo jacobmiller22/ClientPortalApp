@@ -23,7 +23,7 @@ export const uploadFiles = (values) => async (dispatch) => {
   }
 
   const res = await axios.post("/api/files", formData);
-
+  console.log(res);
   dispatch({ type: ACCOUNT_SAVE_SUCCESS, payload: res });
 };
 

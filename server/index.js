@@ -23,5 +23,7 @@ app.use(passport.session());
 require("./routes/authRoutes")(app);
 require("./routes/fileUploadRoutes")(app);
 
+// init firbase things
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT);

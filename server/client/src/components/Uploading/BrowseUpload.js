@@ -22,7 +22,8 @@ class BrowseUpload extends Component {
     if (this.props.files) {
       fileArray = fileListToArr(this.props.files.files);
     } else {
-      return <h3> No file selected</h3>;
+      //return <p>No file selected</p>;
+      return;
     }
     return _.map(this.props.files.files, (file) => {
       return (
@@ -44,7 +45,6 @@ class BrowseUpload extends Component {
       <div>
         <form
           onSubmit={this.props.handleSubmit((values) => {
-            console.log("on submit");
             this.props.uploadFiles(values.files);
             this.props.clearFiles();
           })}
