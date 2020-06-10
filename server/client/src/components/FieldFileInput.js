@@ -1,10 +1,14 @@
-import React, { Component } from "react";
+import React from "react";
 import Button from "@material-ui/core/Button";
 
-export default ({ input, label, meta: { error, touched } }) => {
+export default ({ input, label, meta: { touched, error } }) => {
   return (
-    <div style={{ marginBottom: "5px" }}>
-      <Button variant='contained' color='primary' component='label'>
+    <span style={{ marginBottom: "5px" }}>
+      <Button
+        variant='contained'
+        color='primary'
+        component='label'
+        style={{ margin: 5 }}>
         {label}
         <input
           {...input}
@@ -15,9 +19,9 @@ export default ({ input, label, meta: { error, touched } }) => {
           multiple={true}
         />
       </Button>
-      <div style={{ marginBottom: "20px", color: "red" }}>
+      <span style={{ marginBottom: "20px", color: "red" }}>
         {touched && error}
-      </div>
-    </div>
+      </span>
+    </span>
   );
 };

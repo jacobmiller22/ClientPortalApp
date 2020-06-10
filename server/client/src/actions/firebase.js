@@ -18,7 +18,6 @@ const createFirebase = () => {
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
   }
-
   return firebase;
 };
 export default createFirebase;

@@ -27,8 +27,9 @@ var upload = multer({
 });
 
 module.exports = (app) => {
-  app.get("/api/files", (req, res) => {
-    res.send(req);
+  app.get("/api/files", requireLogin, async (req, res) => {
+    const files = await File.find({ _user: req.user.id });
+    res.send(files);
   });
 
   app.post(
@@ -48,6 +49,8 @@ module.exports = (app) => {
           size,
           mimetype,
           filename,
+          _user: req.user.id,
+          dateUploaded: Date.now(),
         });
 
         try {

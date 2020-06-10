@@ -7,9 +7,8 @@ import "../css/App.css";
 
 import Header from "./Header";
 import Landing from "./Landing";
-import Uploader from "./Uploading/Uploader";
-
-const SurveyNew = () => <h2>SurveyNew</h2>;
+import Uploader from "./files/Uploader";
+import HistoryDashboard from "./files/fileHistory/HistoryDashboard";
 
 class App extends Component {
   componentDidMount() {
@@ -24,7 +23,7 @@ class App extends Component {
             <Header />
             <Route exact path='/' component={Landing} />
             <Route exact path='/upload' component={Uploader} />
-            <Route path='/surveys/new' component={SurveyNew} />
+            <Route exact path='/history' component={HistoryDashboard} />
           </div>
         </BrowserRouter>
       </div>

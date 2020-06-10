@@ -24,10 +24,11 @@ const useStyles = makeStyles((theme) => ({
   },
   menuButton: {},
   appBarItems: {
-    flexGrow: 1,
     font: "timesNewRoman",
   },
-  rightSideItems: {},
+  rightSideItems: {
+    flexGrow: 1,
+  },
 }));
 
 export function Header({ auth }) {
@@ -72,9 +73,14 @@ export function Header({ auth }) {
             Uploader
           </Button>
         </Typography>
-
-        {/* component={Link} to="/home"*/}
-        {renderContent()}
+        <Typography variant='h6' className={classes.appBarItems}>
+          <Button color='inherit' component={Link} to='/history'>
+            History
+          </Button>
+        </Typography>
+        <Typography className={classes.rightSideItems}>
+          {renderContent()}
+        </Typography>
       </Toolbar>
     </AppBar>
   );

@@ -1,5 +1,6 @@
 import axios from "axios";
-import { FETCH_USER, ACCOUNT_SAVE_SUCCESS, CLEAR_FILES } from "./types";
+import { FETCH_USER, CLEAR_FORM_FILES, FETCH_FILES } from "./types";
+import { reset } from "redux-form";
 
 export const fetchUser = () => async (dispatch) => {
   const res = await axios.get("/api/current_user");
@@ -23,10 +24,13 @@ export const uploadFiles = (values) => async (dispatch) => {
   }
 
   const res = await axios.post("/api/files", formData);
-  console.log(res);
-  dispatch({ type: ACCOUNT_SAVE_SUCCESS, payload: res });
+  dispatch({ type: CLEAR_FORM_FILES, payload: null });
+
+  dispatch(reset("formFiles"));
 };
 
-export const clearFiles = () => (dispatch) => {
-  dispatch({ type: CLEAR_FILES, payload: null });
+export const fetchFiles = () => async (dispatch) => {
+  const res = await axios.get("/api/files");
+
+  dispatch({ type: FETCH_FILES, payload: res.data });
 };

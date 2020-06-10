@@ -45,17 +45,19 @@ class BrowseUpload extends Component {
             if (values) {
               this.props.uploadFiles(values.browseFiles);
             }
-            console.log(this.props);
           })}>
           <Field
-            label='Broswse'
+            label='Browse'
             type='file'
             name='browseFiles'
             component={FieldFileInput}
-            //style={{ display: "none" }}
             accept='.pdf'
           />
-          <Button type='submit' variant='contained' color='primary'>
+          <Button
+            type='submit'
+            variant='contained'
+            color='primary'
+            style={{ margin: 5 }}>
             Upload
           </Button>
         </form>
@@ -85,7 +87,7 @@ function validate(values) {
   console.log("validate");
   console.log(values);
   if (!values.browseFiles) {
-    errors.files = "You must provide files to upload";
+    errors.browseFiles = "You must provide files to upload";
   }
 
   return errors;

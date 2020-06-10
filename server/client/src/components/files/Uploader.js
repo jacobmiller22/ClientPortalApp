@@ -28,6 +28,7 @@ const useStyles = makeStyles({
   card: {
     marginLeft: 50,
     marginRight: 50,
+    background: "#EEF0F2",
   },
 });
 
