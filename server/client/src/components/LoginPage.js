@@ -1,35 +1,64 @@
-import React from "react";
+import React, { Component } from "react";
 import { Button } from "@material-ui/core";
 import { connect } from "react-redux";
+import { reduxForm, Field } from "redux-form";
+import * as actions from "../actions";
 
-const LoginPage = ({ auth }) => {
-  const renderContent = function () {
-    switch (auth) {
-      case null:
-        return <p>Something went wrong...</p>;
+class LoginPage extends Component {
+  renderContent() {
+    switch (this.props.authFirebase) {
       case false:
+        return <p>Something went wrong...</p>;
+      case null:
         return (
-          <div>
-            <h2>Please sign in!</h2>;
-            <Button variant='contained' color='primary' href='/auth/google'>
-              Login with Google
+          <form
+            onSubmit={this.props.handleSubmit((values) => {
+              this.props.loginWithFirebaseAuth(values);
+            })}>
+            <Field
+              name='email'
+              type='text'
+              component='input'
+              placeholder='Email'
+            />
+            <Field
+              name='password'
+              type='password'
+              component='input'
+              placeholder='Password'
+            />
+            <Button
+              type='submit'
+              variant='contained'
+              color='primary'
+              style={{ margin: 5 }}>
+              Login
             </Button>
-          </div>
+          </form>
         );
       default:
         return (
-          <Button variant='contained' color='primary' href='/api/logout'>
-            Logout
+          <Button
+            color='primary'
+            variant='contained'
+            onClick={() => {
+              console.log("attempting to logout");
+              this.props.logout();
+            }}>
+            logout
           </Button>
         );
     }
-  };
-
-  return <div>{renderContent()}</div>;
-};
-
-function mapStateToProps({ auth }) {
-  return { auth };
+  }
+  render() {
+    return <div>{this.renderContent()}</div>;
+  }
 }
 
-export default connect(mapStateToProps)(LoginPage);
+function mapStateToProps({ authFirebase }) {
+  return { authFirebase };
+}
+
+export default reduxForm({
+  form: "loginForm",
+})(connect(mapStateToProps, actions)(LoginPage));

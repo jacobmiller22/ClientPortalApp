@@ -8,6 +8,7 @@ import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 
+import * as actions from "../actions";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 
@@ -31,10 +32,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export function Header({ auth }) {
+export function Header({ auth, authFirebase, logout }) {
   const classes = useStyles();
 
-  const renderContent = function () {
+  const renderOAuthContent = function () {
     switch (auth) {
       case null:
         return;
@@ -48,6 +49,29 @@ export function Header({ auth }) {
         return (
           <Button color='inherit' href='/api/logout'>
             Logout
+          </Button>
+        );
+    }
+  };
+
+  const renderFirebaseAuthContent = function () {
+    console.log(authFirebase);
+    switch (authFirebase) {
+      case null:
+        return (
+          <Button color='inherit' component={Link} to='/auth'>
+            Login
+          </Button>
+        );
+      default:
+        return (
+          <Button
+            color='inherit'
+            onClick={() => {
+              console.log("attempting to logout");
+              logout();
+            }}>
+            logout
           </Button>
         );
     }
@@ -79,15 +103,18 @@ export function Header({ auth }) {
           </Button>
         </Typography>
         <Typography className={classes.rightSideItems}>
-          {renderContent()}
+          {renderOAuthContent()}
+        </Typography>
+        <Typography className={classes.rightSideItems}>
+          {renderFirebaseAuthContent()}
         </Typography>
       </Toolbar>
     </AppBar>
   );
 }
 
-function mapStateToProps({ auth }) {
-  return { auth };
+function mapStateToProps({ auth, authFirebase }) {
+  return { auth, authFirebase };
 }
 
-export default connect(mapStateToProps)(Header);
+export default connect(mapStateToProps, actions)(Header);

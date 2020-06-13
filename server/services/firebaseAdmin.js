@@ -11,7 +11,7 @@ exports.createFireBaseAdmin = function () {
     console.log("App initialized");
   }
 
-  var bucket = admin.storage().bucket();
+  var admin = admin.storage().bucket();
 
-  return bucket;
+  return admin;
 };

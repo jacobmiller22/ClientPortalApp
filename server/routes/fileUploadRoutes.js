@@ -37,10 +37,10 @@ module.exports = (app) => {
     requireLogin,
     upload.single("file1"), // change file1 name to a dynamic
     (req, res) => {
-      const bucket = require("../services/firebaseAdmin.js").createFireBaseAdmin();
+      const admin = require("../services/firebaseAdmin.js").createFireBaseAdmin();
 
       async function uploadFiles() {
-        await bucket.upload(req.file.path);
+        await admin.storage().bucket().upload(req.file.path);
 
         const { originalname, size, mimetype, filename } = req.file;
 

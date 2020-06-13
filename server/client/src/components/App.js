@@ -9,10 +9,12 @@ import Header from "./Header";
 import Landing from "./Landing";
 import Uploader from "./files/Uploader";
 import HistoryDashboard from "./files/fileHistory/HistoryDashboard";
+import LoginPage from "./LoginPage";
 
 class App extends Component {
   componentDidMount() {
     this.props.fetchUser();
+    this.props.fetchUserFirebase();
   }
 
   render() {
@@ -24,6 +26,7 @@ class App extends Component {
             <Route exact path='/' component={Landing} />
             <Route exact path='/upload' component={Uploader} />
             <Route exact path='/history' component={HistoryDashboard} />
+            <Route exact path='/auth' component={LoginPage} />
           </div>
         </BrowserRouter>
       </div>

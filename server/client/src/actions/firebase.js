@@ -1,6 +1,9 @@
+import { connect } from "react-redux";
+
 var firebase = require("firebase/app");
 
 require("firebase/storage");
+require("firebase/auth");
 
 const createFirebase = () => {
   if (firebase.apps.length === 0) {
@@ -18,6 +21,25 @@ const createFirebase = () => {
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
   }
+  firebase.auth().onAuthStateChanged(function (user) {
+    console.log("auth state changed");
+    console.log(user);
+    if (user) {
+      var displayName = user.displayName;
+      var email = user.email;
+      var emailVerified = user.emailVerified;
+      var photoURL = user.photoURL;
+      var isAnonymous = user.isAnonymous;
+      var uid = user.uid;
+      var providerData = user.providerData;
+
+      // reflect values on backend server
+      //console.log(user);
+    } else {
+      console.log("User is not signed in");
+    }
+  });
+
   return firebase;
 };
 export default createFirebase;
