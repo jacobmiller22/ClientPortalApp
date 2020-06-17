@@ -13,8 +13,8 @@ import LoginPage from "./LoginPage";
 
 class App extends Component {
   componentDidMount() {
-    this.props.fetchUser();
-    this.props.fetchUserFirebase();
+    //this.props.fetchUser();
+    //this.props.fetchUserFirebase();
   }
 
   render() {

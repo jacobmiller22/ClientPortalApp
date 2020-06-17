@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
@@ -6,11 +6,12 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
-import MenuIcon from "@material-ui/icons/Menu";
 
-import * as actions from "../actions";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
+
 import { Link } from "react-router-dom";
+
+import { withFirebase, isLoaded, isEmpty } from "react-redux-firebase";
 
 //import "../css/Header.css";
 const useStyles = makeStyles((theme) => ({
@@ -18,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: "black",
   },
   logo: {
-    width: 40,
+    width: 90,
   },
   root: {
     flexGrow: 1,
@@ -32,50 +33,51 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export function Header({ auth, authFirebase, logout }) {
+function Header(props) {
   const classes = useStyles();
 
-  const renderOAuthContent = function () {
-    switch (auth) {
-      case null:
-        return;
-      case false:
-        return (
-          <Button color='inherit' href='/auth/google'>
-            Login with Google
-          </Button>
-        );
-      default:
-        return (
-          <Button color='inherit' href='/api/logout'>
-            Logout
-          </Button>
-        );
+  // const renderOAuthContent = function () {
+  //   switch (auth) {
+  //     case null:
+  //       return;
+  //     case false:
+  //       return (
+  //         <Button color='inherit' href='/auth/google'>
+  //           Login with Google
+  //         </Button>
+  //       );
+  //     default:
+  //       return (
+  //         <Button color='inherit' href='/api/logout'>
+  //           Logout
+  //         </Button>
+  //       );
+  //   }
+  // };
+
+  const renderFirebaseAuthContent = function (auth) {
+    if (isLoaded(auth) && !isEmpty(auth)) {
+      return (
+        <Button
+          color='inherit'
+          onClick={() => {
+            console.log("attempting to logout");
+            // logout();
+            props.firebase.logout();
+          }}>
+          logout
+        </Button>
+      );
+    } else {
+      return (
+        <Button color='inherit' component={Link} to='/auth'>
+          Login
+        </Button>
+      );
     }
   };
 
-  const renderFirebaseAuthContent = function () {
-    console.log(authFirebase);
-    switch (authFirebase) {
-      case null:
-        return (
-          <Button color='inherit' component={Link} to='/auth'>
-            Login
-          </Button>
-        );
-      default:
-        return (
-          <Button
-            color='inherit'
-            onClick={() => {
-              console.log("attempting to logout");
-              logout();
-            }}>
-            logout
-          </Button>
-        );
-    }
-  };
+  const auth = useSelector((state) => state.firebase.auth);
 
   return (
     <AppBar className={classes.appBar} position='static'>
@@ -88,7 +90,7 @@ export function Header({ auth, authFirebase, logout }) {
           <Button color='inherit' component={Link} to='/'>
             <img
               className={classes.logo}
-              src='https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Instagram_logo_2016.svg/1200px-Instagram_logo_2016.svg.png'
+              src='http://staffordtaxadvisors.com/wp-content/uploads/2016/07/Logo-STBA-small-e1467831377961.png'
             />
           </Button>
         </IconButton>
@@ -102,19 +104,15 @@ export function Header({ auth, authFirebase, logout }) {
             History
           </Button>
         </Typography>
-        <Typography className={classes.rightSideItems}>
+        {/* <Typography className={classes.rightSideItems}>
           {renderOAuthContent()}
-        </Typography>
+        </Typography> */}
         <Typography className={classes.rightSideItems}>
-          {renderFirebaseAuthContent()}
+          {renderFirebaseAuthContent(auth)}
         </Typography>
       </Toolbar>
     </AppBar>
   );
 }
 
-function mapStateToProps({ auth, authFirebase }) {
-  return { auth, authFirebase };
-}
-
-export default connect(mapStateToProps, actions)(Header);
+export default withFirebase(Header);

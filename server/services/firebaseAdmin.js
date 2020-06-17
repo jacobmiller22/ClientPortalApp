@@ -11,7 +11,24 @@ exports.createFireBaseAdmin = function () {
     console.log("App initialized");
   }
 
-  var admin = admin.storage().bucket();
+  //admin = admin.storage().bucket();
 
   return admin;
+};
+
+exports.findUser = function (uid) {
+  const mongoose = require("mongoose");
+  const User = mongoose.model("users");
+
+  async (uid) => {
+    const existingUser = await User.findOne({ uid: uid });
+
+    if (existingUser) {
+      // user exists
+      return existingUser;
+    }
+    // make new user in backend
+    const user = await new User({ uid }).save();
+    return user;
+  };
 };

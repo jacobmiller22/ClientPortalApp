@@ -5,8 +5,7 @@ export default function (state = null, action) {
     case FETCH_USER_FIREBASE:
       return action.payload;
     case UPDATE_AUTH:
-      console.log(action.payload);
-      return action.payload;
+      return action.payload || false;
     default:
       return state;
   }

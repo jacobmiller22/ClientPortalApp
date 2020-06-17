@@ -8,6 +8,7 @@ const fileSchema = new Schema({
   filename: String,
   _user: { type: Schema.Types.ObjectId, ref: "User" },
   dateUploaded: Date,
+  uploadAuthor: String,
 });
 
 mongoose.model("files", fileSchema);

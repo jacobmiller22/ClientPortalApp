@@ -4,21 +4,28 @@ import { fetchFiles } from "../../actions";
 
 import Card from "@material-ui/core/Card";
 import createFirebase from "../../actions/firebase";
+import { withFirebase, firebaseConnect } from "react-redux-firebase";
+import { Typography, Button } from "@material-ui/core";
+import { landingTheme } from "../styling/themes";
+import { MuiThemeProvider } from "@material-ui/core/styles";
+
 class FileList extends Component {
   componentDidMount() {
-    this.props.fetchFiles();
+    this.props.fetchFiles(this.props.firebase);
   }
 
   downloadFile(file) {
-    const firebase = createFirebase();
-    var storage = firebase.storage();
+    let firebase = this.props.firebase;
 
-    var pathRef = storage.ref(file.filename);
+    let storage = firebase.storage();
+    let auth = firebase.auth();
+    let pathRef = storage.ref(auth.currentUser.uid + "/" + file.filename);
 
     pathRef
       .getDownloadURL()
       .then(function (url) {
-        var xhr = new XMLHttpRequest();
+        // TODO: MAKE HELPER FOR THIS
+        let xhr = new XMLHttpRequest();
         xhr.responseType = "blob";
         xhr.onload = function (event) {
           var blob = xhr.response;
@@ -68,28 +75,40 @@ class FileList extends Component {
     return this.props.files.reverse().map((file) => {
       return (
         <div key={file.filename} style={{ padding: 10 }}>
-          <Card style={{ padding: 10, background: "#EEF0F2" }}>
-            <span>{file.originalname}</span>
-            <span style={{ float: "right" }}>
-              &ensp;&ensp;
-              <a
-                href=''
-                onClick={(e) => {
-                  e.preventDefault();
-                  this.downloadFile(file);
-                }}>
-                view
-              </a>
-            </span>
-            <span style={{ float: "right" }}>
-              Date:&ensp;{new Date(file.dateUploaded).toLocaleDateString()} at{" "}
-              {new Date(file.dateUploaded).toLocaleTimeString()}
-            </span>
+          <Card elevation={2} style={{ padding: 10 }}>
+            <MuiThemeProvider theme={landingTheme}>
+              <span>
+                <Typography display='inline'>
+                  <strong>File: </strong>
+                  {file.originalname}
+                </Typography>
+              </span>
+              <span style={{ float: "right" }}>
+                &ensp;&ensp;
+                <Button
+                  color='primary'
+                  display='inline'
+                  onClick={(e) => {
+                    e.preventDefault();
+                    this.downloadFile(file);
+                  }}>
+                  view
+                </Button>
+              </span>
+              <span style={{ float: "right" }}>
+                <Typography display='inline'>
+                  <strong>Date:&ensp;</strong>
+                  {new Date(file.dateUploaded).toLocaleDateString()} at
+                  {new Date(file.dateUploaded).toLocaleTimeString()}
+                </Typography>
+              </span>
+            </MuiThemeProvider>
           </Card>
         </div>
       );
     });
   }
+
   render() {
     return <div> {this.renderFiles()}</div>;
   }
@@ -99,4 +118,6 @@ function mapStateToProps(state) {
   return { files: state.files };
 }
 
-export default connect(mapStateToProps, { fetchFiles })(FileList);
+export default connect(mapStateToProps, { fetchFiles })(
+  firebaseConnect()(FileList)
+);

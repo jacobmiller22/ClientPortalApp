@@ -3,7 +3,9 @@ import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
+
+import { landingTheme } from "../styling/themes";
+import { MuiThemeProvider } from "@material-ui/core/styles";
 
 import BrowseUpload from "./BrowseUpload";
 
@@ -26,37 +28,43 @@ const useStyles = makeStyles({
     marginBottom: 12,
   },
   card: {
-    marginLeft: 50,
-    marginRight: 50,
-    background: "#EEF0F2",
+    marginLeft: "5rem",
+    marginRight: "5rem",
   },
+  container: { margin: "1rem", padding: "1rem" },
 });
 
 export default function Uploader() {
   const classes = useStyles();
-  const bull = <span className={classes.bullet}>•</span>;
 
   return (
-    <div className={classes.container} style={{ textAlign: "center" }}>
+    <div style={{ textAlign: "center" }}>
       <div>
-        <h1>Portal Uploader!</h1>
-        Upload content to your provider here
-        <div className='numberedList' style={{ textAlign: "left" }}>
+        <MuiThemeProvider theme={landingTheme}>
+          <Typography variant='h3' color='secondary'>
+            Portal Uploader!
+          </Typography>
+          <Typography variant='h5'>
+            Upload content to your provider here
+          </Typography>
+        </MuiThemeProvider>
+
+        <div className='upload_instructions' style={{ textAlign: "left" }}>
           <ol>
             <li>
-              <Typography>Click browse</Typography>
+              <Typography>Click browse!</Typography>
             </li>
             <li>
-              <Typography>Select file to upload</Typography>
+              <Typography>Select file to upload!</Typography>
             </li>
             <li>
-              <Typography>Select file to upload</Typography>
+              <Typography>Click upload!</Typography>
             </li>
           </ol>
         </div>
       </div>
       <div>
-        <Card className={classes.card} variant='outlined'>
+        <Card className={classes.card} elevation={4}>
           <CardContent>
             <BrowseUpload />
           </CardContent>

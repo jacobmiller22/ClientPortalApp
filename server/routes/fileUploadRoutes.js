@@ -27,42 +27,69 @@ var upload = multer({
 });
 
 module.exports = (app) => {
-  app.get("/api/files", requireLogin, async (req, res) => {
-    const files = await File.find({ _user: req.user.id });
-    res.send(files);
-  });
-
-  app.post(
-    "/api/files",
-    requireLogin,
-    upload.single("file1"), // change file1 name to a dynamic
-    (req, res) => {
+  requireLogin,
+    app.get("/api/files", async (req, res) => {
       const admin = require("../services/firebaseAdmin.js").createFireBaseAdmin();
 
-      async function uploadFiles() {
-        await admin.storage().bucket().upload(req.file.path);
+      admin
+        .auth()
+        .verifyIdToken(req.query.currentUserToken)
+        .then(async function (decodedToken) {
+          console.log(decodedToken);
+          let uid = decodedToken.uid;
 
-        const { originalname, size, mimetype, filename } = req.file;
-
-        const file = new File({
-          originalname,
-          size,
-          mimetype,
-          filename,
-          _user: req.user.id,
-          dateUploaded: Date.now(),
+          try {
+            const files = await File.find({ uploadAuthor: uid });
+            res.send(files);
+          } catch (error) {
+            console.log(error);
+          }
+        })
+        .catch(function (error) {
+          console.log("Error:");
+          console.log(error);
         });
 
-        try {
-          await file.save();
-          res.send(file);
-        } catch (err) {
-          res.status(422).send(err);
-        }
+      //const files = await File.find({ uploadAuthor: req.user.id });
+    });
+  requireLogin,
+    app.post(
+      "/api/files",
 
-        // Delete files off local server
+      upload.single("file1"), // change file1 name to a dynamic
+      (req, res) => {
+        const admin = require("../services/firebaseAdmin.js").createFireBaseAdmin();
+
+        async function uploadFiles() {
+          let path = req.body.author + "/" + req.file.path;
+          await admin
+            .storage()
+            .bucket()
+            .upload(req.file.path, {
+              destination: `${req.body.author}/${req.file.filename}`,
+            });
+
+          const { originalname, size, mimetype, filename } = req.file;
+
+          const file = new File({
+            originalname,
+            size,
+            mimetype,
+            filename,
+            uploadAuthor: req.body.author,
+            dateUploaded: Date.now(),
+          });
+
+          try {
+            await file.save();
+            res.send(file);
+          } catch (err) {
+            res.status(422).send(err);
+          }
+
+          // Delete files off local server
+        }
+        uploadFiles().catch(console.error);
       }
-      uploadFiles().catch(console.error);
-    }
-  );
+    );
 };

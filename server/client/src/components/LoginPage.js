@@ -1,64 +1,61 @@
-import React, { Component } from "react";
+import React from "react";
+
+// UI
 import { Button } from "@material-ui/core";
-import { connect } from "react-redux";
+
+// Redux
 import { reduxForm, Field } from "redux-form";
-import * as actions from "../actions";
+import { useSelector } from "react-redux";
+import { withFirebase, isLoaded, isEmpty } from "react-redux-firebase";
 
-class LoginPage extends Component {
-  renderContent() {
-    switch (this.props.authFirebase) {
-      case false:
-        return <p>Something went wrong...</p>;
-      case null:
-        return (
-          <form
-            onSubmit={this.props.handleSubmit((values) => {
-              this.props.loginWithFirebaseAuth(values);
-            })}>
-            <Field
-              name='email'
-              type='text'
-              component='input'
-              placeholder='Email'
-            />
-            <Field
-              name='password'
-              type='password'
-              component='input'
-              placeholder='Password'
-            />
-            <Button
-              type='submit'
-              variant='contained'
-              color='primary'
-              style={{ margin: 5 }}>
-              Login
-            </Button>
-          </form>
-        );
-      default:
-        return (
+function LoginPage(props) {
+  const renderContent = function (props, auth) {
+    if (isLoaded(auth) && !isEmpty(auth)) {
+      return (
+        <Button
+          color='primary'
+          variant='contained'
+          onClick={() => props.firebase.logout()}>
+          logout
+        </Button>
+      );
+    } else {
+      return (
+        <form
+          onSubmit={props.handleSubmit((values) => {
+            props.firebase.login({
+              email: values.email,
+              password: values.password,
+            });
+          })}>
+          <Field
+            name='email'
+            type='text'
+            component='input'
+            placeholder='Email'
+          />
+          <Field
+            name='password'
+            type='password'
+            component='input'
+            placeholder='Password'
+          />
           <Button
-            color='primary'
+            type='submit'
             variant='contained'
-            onClick={() => {
-              console.log("attempting to logout");
-              this.props.logout();
-            }}>
-            logout
+            color='primary'
+            style={{ margin: 5 }}>
+            Login
           </Button>
-        );
+        </form>
+      );
     }
-  }
-  render() {
-    return <div>{this.renderContent()}</div>;
-  }
-}
+  };
+  const auth = useSelector((state) => state.firebase.auth);
 
-function mapStateToProps({ authFirebase }) {
-  return { authFirebase };
+  return <div>{renderContent(props, auth)}</div>;
 }
 
 export default reduxForm({
   form: "loginForm",
-})(connect(mapStateToProps, actions)(LoginPage));
+})(withFirebase(LoginPage));
