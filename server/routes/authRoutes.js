@@ -1,27 +1,23 @@
-const passport = require("passport");
+const requireLogin = require("../middlewares/requireLogin");
+const { ADMINISTRATOR, CLIENT } = require("./userTypes");
+require("./userTypes");
 
 module.exports = (app) => {
-  app.get(
-    "/auth/google",
-    passport.authenticate("google", {
-      scope: ["profile", "email"],
-    })
-  );
+  app.get("/api/users", requireLogin, async (req, res) => {
+    let uid = req.decodedToken.uid;
 
-  app.get(
-    "/auth/google/callback",
-    passport.authenticate("google"),
-    (req, res) => {
-      res.redirect("/upload");
-    }
-  );
+    let admin = require("../services/firebaseAdmin").createFireBaseAdmin();
 
-  app.get("/api/logout", (req, res) => {
-    req.logout();
-    res.redirect("/");
-  });
-
-  app.get("/api/current_user", (req, res) => {
-    res.send(req.user);
+    admin
+      .auth()
+      .listUsers()
+      .then((result) => {
+        try {
+          const users = JSON.stringify(result);
+          res.send(users);
+        } catch (error) {
+          console.log(error);
+        }
+      });
   });
 };

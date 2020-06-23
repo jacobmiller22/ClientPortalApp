@@ -1,2 +1,2 @@
-export const ADMINISTRATOR = "admin_type";
-export const CLIENT = "client_type";
+const ADMINISTRATOR = "Administrator";
+const CLIENT = "Client";
