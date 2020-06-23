@@ -1,5 +1,5 @@
 import axios from "axios";
-import { FETCH_FILES, UPDATE_AUTH } from "./types";
+import { FETCH_FILES, UPDATE_AUTH, FETCH_USERS } from "./types";
 import { reset } from "redux-form";
 import createFirebase from "./firebase";
 import { firebaseReducer } from "react-redux-firebase";
@@ -39,6 +39,64 @@ export const fetchFiles = (firebase) => async (dispatch) => {
       })
       .catch(function (error) {
         console.log(error);
+      });
+  }
+};
+
+export const fetchUsers = (firebase) => async (dispatch) => {
+  // Grabs the list of users from backend
+  if (!!firebase.auth().currentUser) {
+    await firebase
+      .auth()
+      .currentUser.getIdTokenResult()
+      .then(async (idTokenResult) => {
+        try {
+          // Confirm admin role
+          if (idTokenResult.claims.administrator) {
+            console.log("authorized user");
+
+            const res = await axios.get("/api/users", {
+              params: {
+                currentUserToken: idTokenResult.token,
+              },
+            });
+            dispatch({ type: FETCH_USERS, payload: res.data });
+          } else {
+            console.log("unauth");
+            console.log(idTokenResult);
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      });
+  }
+};
+
+export const changePermissions = (firebase, user, role) => async (dispatch) => {
+  if (!!firebase.auth().currentUser) {
+    await firebase
+      .auth()
+      .currentUser.getIdTokenResult()
+      .then(async (idTokenResult) => {
+        try {
+          // Confirm admin role
+          if (idTokenResult.claims.administrator) {
+            console.log("authorized user");
+
+            const payload = {
+              senderToken: idTokenResult.token,
+              user,
+              role,
+            };
+            const res = await axios.post("/api/grant_role", payload);
+            console.log(res);
+          } else {
+            console.log("unauth");
+            console.log(idTokenResult);
+          }
+        } catch (error) {
+          console.log(error);
+        }
       });
   }
 };

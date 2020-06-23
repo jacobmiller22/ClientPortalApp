@@ -10,6 +10,7 @@ import Landing from "./Landing";
 import Uploader from "./files/Uploader";
 import HistoryDashboard from "./files/fileHistory/HistoryDashboard";
 import LoginPage from "./LoginPage";
+import UserManagement from "./users/UserManagement";
 
 class App extends Component {
   componentDidMount() {
@@ -27,6 +28,7 @@ class App extends Component {
             <Route exact path='/upload' component={Uploader} />
             <Route exact path='/history' component={HistoryDashboard} />
             <Route exact path='/auth' component={LoginPage} />
+            <Route exact path='/manage_users' component={UserManagement} />
           </div>
         </BrowserRouter>
       </div>

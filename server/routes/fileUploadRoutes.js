@@ -61,7 +61,7 @@ module.exports = (app) => {
         const admin = require("../services/firebaseAdmin.js").createFireBaseAdmin();
 
         async function uploadFiles() {
-          let path = req.body.author + "/" + req.file.path;
+          // let path = req.body.author + "/" + req.file.path;
           await admin
             .storage()
             .bucket()
@@ -82,6 +82,13 @@ module.exports = (app) => {
 
           try {
             await file.save();
+            const fs = require("fs");
+            fs.unlink(`./data/uploads/${req.file.filename}`, (err) => {
+              if (err) {
+                console.log(err);
+              }
+            });
+
             res.send(file);
           } catch (err) {
             res.status(422).send(err);

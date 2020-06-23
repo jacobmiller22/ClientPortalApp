@@ -50,21 +50,22 @@ function BrowseUploadFiles(props) {
     <MuiThemeProvider theme={landingTheme}>
       <form
         onSubmit={props.handleSubmit((values) => {
-          console.log(props);
+          console.log(values);
           if (values) {
-            //   this.props.uploadFiles(values.browseFiles);
             let formData = new FormData();
 
             let files = values.browseFiles;
 
             for (let i = 0; i < files.length; i++) {
               let key = "file" + (i + 1).toString();
+              console.log(key);
               formData.append(key, files[i]);
             }
+            console.log(formData.keys());
 
             try {
               formData.append("author", props.firebase.auth().currentUser.uid); // Untested
-              props.uploadFormData(formData);
+              props.uploadFormData(formData, props.firebase);
             } catch (error) {
               console.log(error);
             }

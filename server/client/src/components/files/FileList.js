@@ -3,8 +3,8 @@ import { connect } from "react-redux";
 import { fetchFiles } from "../../actions";
 
 import Card from "@material-ui/core/Card";
-import createFirebase from "../../actions/firebase";
-import { withFirebase, firebaseConnect } from "react-redux-firebase";
+
+import { firebaseConnect } from "react-redux-firebase";
 import { Typography, Button } from "@material-ui/core";
 import { landingTheme } from "../styling/themes";
 import { MuiThemeProvider } from "@material-ui/core/styles";

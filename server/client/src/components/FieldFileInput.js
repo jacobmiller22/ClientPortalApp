@@ -17,6 +17,7 @@ export default ({ input, label, meta: { touched, error } }) => {
           style={{ display: "none" }}
           value={undefined}
           multiple={true}
+          name='files'
         />
       </Button>
       <span style={{ marginBottom: "20px", color: "red" }}>

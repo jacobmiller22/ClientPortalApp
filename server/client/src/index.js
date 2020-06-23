@@ -22,7 +22,7 @@ const fbConfig = {
   messagingSenderId: "178734720350",
   appId: "1:178734720350:web:59f43e2dda92b305df5bcf",
 };
-console.log(fbConfig);
+
 // react-redux-firebase config
 const rrfConfig = {
   //userProfile: "users",

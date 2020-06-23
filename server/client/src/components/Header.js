@@ -62,7 +62,6 @@ function Header(props) {
           color='inherit'
           onClick={() => {
             console.log("attempting to logout");
-            // logout();
             props.firebase.logout();
           }}>
           logout
@@ -90,6 +89,7 @@ function Header(props) {
           <Button color='inherit' component={Link} to='/'>
             <img
               className={classes.logo}
+              alt='Stafford Tax Logo'
               src='http://staffordtaxadvisors.com/wp-content/uploads/2016/07/Logo-STBA-small-e1467831377961.png'
             />
           </Button>
@@ -104,10 +104,12 @@ function Header(props) {
             History
           </Button>
         </Typography>
-        {/* <Typography className={classes.rightSideItems}>
-          {renderOAuthContent()}
-        </Typography> */}
         <Typography className={classes.rightSideItems}>
+          <Button color='inherit' component={Link} to='manage_users'>
+            Manage Users
+          </Button>
+        </Typography>
+        <Typography align='right' className={classes.rightSideItems}>
           {renderFirebaseAuthContent(auth)}
         </Typography>
       </Toolbar>
