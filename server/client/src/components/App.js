@@ -16,19 +16,20 @@ class App extends Component {
   componentDidMount() {
     //this.props.fetchUser();
     //this.props.fetchUserFirebase();
+    this.props.__changeAuthState__();
   }
 
   render() {
     return (
       <div>
         <BrowserRouter>
-          <div className='container'>
+          <div className="container">
             <Header />
-            <Route exact path='/' component={Landing} />
-            <Route exact path='/upload' component={Uploader} />
-            <Route exact path='/history' component={HistoryDashboard} />
-            <Route exact path='/auth' component={LoginPage} />
-            <Route exact path='/manage_users' component={UserManagement} />
+            <Route exact path="/" component={Landing} />
+            <Route exact path="/upload" component={Uploader} />
+            <Route exact path="/history" component={HistoryDashboard} />
+            <Route exact path="/auth" component={LoginPage} />
+            <Route exact path="/manage_users" component={UserManagement} />
           </div>
         </BrowserRouter>
       </div>

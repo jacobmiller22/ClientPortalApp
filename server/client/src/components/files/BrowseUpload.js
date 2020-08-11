@@ -1,3 +1,7 @@
+/*
+DEPRECATED
+*/
+
 import React from "react";
 import Button from "@material-ui/core/Button";
 import { reduxForm, Field } from "redux-form";
@@ -27,15 +31,15 @@ function BrowseUploadFiles(props) {
         id++;
 
         return (
-          <Grid container item xs={12} spacing={3} key={id} align='left'>
+          <Grid container item xs={12} spacing={3} key={id} align="left">
             <React.Fragment>
               <Grid item xs={4}>
-                <Typography variant='body1'>
+                <Typography variant="body1">
                   <strong>Name:</strong> {file.name}
                 </Typography>
               </Grid>
               <Grid item xs={"auto"}>
-                <Typography variant='body1'>
+                <Typography variant="body1">
                   <strong>Size:</strong> {bytesToMegabytes(file.size)} MB
                 </Typography>
               </Grid>
@@ -72,22 +76,22 @@ function BrowseUploadFiles(props) {
           }
         })}>
         <Field
-          label='Browse'
-          type='file'
-          name='browseFiles'
+          label="Browse"
+          type="file"
+          name="browseFiles"
           component={FieldFileInput}
-          accept='.pdf'
+          accept=".pdf"
         />
         <Button
-          type='submit'
-          variant='contained'
-          color='primary'
+          type="submit"
+          variant="contained"
+          color="primary"
           style={{ margin: 5 }}>
           Upload
         </Button>
       </form>
-      <div className='fileDetails'>
-        <Typography variant='h5' align='left'>
+      <div className="fileDetails">
+        <Typography variant="h5" align="left">
           File Details:
         </Typography>
 

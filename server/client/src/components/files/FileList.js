@@ -52,7 +52,7 @@ class FileList extends Component {
       .catch(function (error) {
         // A full list of error codes is available at
         // https://firebase.google.com/docs/storage/web/handle-errors
-        console.log(error.code);
+
         switch (error.code) {
           case "storage/object-not-found":
             // File doesn't exist
@@ -65,6 +65,9 @@ class FileList extends Component {
             break;
           case "storage/unknown":
             // Unknown error occurred, inspect the server response
+            break;
+          default:
+            console.log(error.code);
             break;
         }
       });

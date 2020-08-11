@@ -1,24 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { ReactDom } from "react-dom";
+import React, { useEffect } from "react";
+
 import { withFirebase } from "react-redux-firebase";
 
 import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
-import Avatar from "@material-ui/core/Avatar";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemAvatar from "@material-ui/core/ListItemAvatar";
-import ListItemText from "@material-ui/core/ListItemText";
-import PersonIcon from "@material-ui/icons/Person";
-import AddIcon from "@material-ui/icons/Add";
 
-import { blue } from "@material-ui/core/colors";
 import {
   Typography,
   Button,
   InputLabel,
-  FormHelperText,
-  IconButton,
   FormControl,
   Select,
   Dialog,
@@ -56,8 +46,6 @@ const UserDialogue = (props) => {
     // On Change, affect State
     const handleChange = (event) => {
       const name = event.target.name;
-
-      console.log(event.target.value);
       setState({
         ...state,
         [name]: event.target.value,
@@ -78,8 +66,7 @@ const UserDialogue = (props) => {
           inputProps={{
             name: "permissions",
             id: "permissions-selector",
-          }}
-          value={state.permissions}>
+          }}>
           <option aria-label='None' value='' />
           <option value='Client'>Client</option>
           <option value='Administrator'>Administrator</option>
@@ -92,7 +79,8 @@ const UserDialogue = (props) => {
 
   const handleClose = () => {
     onClose();
-    console.log(selectedValue);
+
+    console.log(user);
   };
 
   const handleSaveChanges = () => {
@@ -107,7 +95,11 @@ const UserDialogue = (props) => {
         aria-labelledby='simple-dialog-title'
         open={open}>
         <DialogTitle id='simple-dialog-title'>Modify User Info</DialogTitle>
-        <Typography>Username: {user.email}</Typography>
+        <Typography>Display Name: {user.displayName} </Typography>
+        <Typography>Password: </Typography>
+
+        <Typography>Email: {user.email}</Typography>
+
         {renderPermissionSelector(user)}
         <Button
           className={classes.formControl}

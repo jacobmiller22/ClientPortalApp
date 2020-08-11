@@ -1,17 +1,8 @@
 import axios from "axios";
-import { FETCH_FILES, UPDATE_AUTH, FETCH_USERS } from "./types";
+import { FETCH_FILES, FETCH_USERS } from "./types";
 import { reset } from "redux-form";
-import createFirebase from "./firebase";
-import { firebaseReducer } from "react-redux-firebase";
 
-export const fetchUserFirebase = () => async (dispatch) => {
-  console.log("DEPRECATED FETCHUSERFIREBASE");
-  var firebase = createFirebase();
-  dispatch({
-    type: UPDATE_AUTH,
-    payload: firebase.auth().currentUser,
-  });
-};
+import { authRef } from "../firebase";
 
 export const uploadFormData = (formData) => async (dispatch) => {
   const res = await axios.post("/api/files", formData);
@@ -45,7 +36,7 @@ export const fetchFiles = (firebase) => async (dispatch) => {
 
 export const fetchUsers = (firebase) => async (dispatch) => {
   // Grabs the list of users from backend
-  if (!!firebase.auth().currentUser) {
+  if (firebase.auth().currentUser) {
     await firebase
       .auth()
       .currentUser.getIdTokenResult()
@@ -73,7 +64,7 @@ export const fetchUsers = (firebase) => async (dispatch) => {
 };
 
 export const changePermissions = (firebase, user, role) => async (dispatch) => {
-  if (!!firebase.auth().currentUser) {
+  if (firebase.auth().currentUser) {
     await firebase
       .auth()
       .currentUser.getIdTokenResult()
@@ -99,4 +90,53 @@ export const changePermissions = (firebase, user, role) => async (dispatch) => {
         }
       });
   }
+};
+
+export const createUser = (firebase, values) => async (dispatch) => {
+  if (firebase.auth().currentUser) {
+    await firebase
+      .auth()
+      .currentUser.getIdTokenResult()
+      .then(async (idTokenResult) => {
+        try {
+          if (idTokenResult.claims.administrator) {
+            // polish values
+
+            const payload = {
+              senderToken: idTokenResult.token,
+              user: {
+                email: values.email,
+                displayName: `${values.firstName.trim()} ${values.lastName.trim()}`,
+                phoneNumber: `+1${values.phone}`,
+                password: values.password,
+              },
+            };
+            const res = axios.post("/api/create_user", payload);
+            dispatch(reset("formFiles"));
+          } else {
+            console.log("unauth");
+            console.log(idTokenResult);
+          }
+        } catch (err) {
+          console.log(err);
+        }
+      });
+  }
+};
+
+export const __changeAuthState__ = () => (dispatch) => {
+  authRef.onAuthStateChanged((user) => {
+    dispatch({
+      type: "USER_STATUS",
+      payload: user || null,
+    });
+  });
+};
+
+export const signUserIn = (email, password) => () => {
+  authRef.signInWithEmailAndPassword(email, password);
+};
+
+export const signUserOut = () => () => {
+  authRef.signOut();
 };

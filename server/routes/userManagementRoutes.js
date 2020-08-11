@@ -3,6 +3,7 @@ const { ADMINISTRATOR, CLIENT } = require("./userTypes");
 require("./userTypes");
 
 module.exports = (app) => {
+  // Grant Role
   app.post("/api/grant_role", requireLogin, async (req, res) => {
     let uid = req.decodedToken.uid;
 
@@ -46,8 +47,31 @@ module.exports = (app) => {
             flagSuccess = true;
           });
         break;
+      default:
+        console.log("Error: Invalid Role");
     }
 
     res.send(flagSuccess);
+  });
+
+  // Create user
+  app.post("/api/create_user", requireLogin, async (req, res) => {
+    console.log(req);
+    console.log(req.user);
+    console.log(req.body);
+
+    let admin = require("../services/firebaseAdmin").createFireBaseAdmin();
+
+    await admin
+      .auth()
+      .createUser(req.body.user)
+      .then(function (userRecord) {
+        // See the UserRecord reference doc for the contents of userRecord.
+        console.log("Successfully created new user:", userRecord.uid);
+        res.send(userRecord);
+      })
+      .catch(function (error) {
+        console.log("Error creating new user:", error);
+      });
   });
 };
