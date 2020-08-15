@@ -1,9 +1,6 @@
-const mongoose = require("mongoose");
 const requireLogin = require("../middlewares/requireLogin");
-
-const File = mongoose.model("files");
-
 var multer = require("multer");
+const fs = require("fs");
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -27,10 +24,11 @@ var upload = multer({
 });
 
 module.exports = (app) => {
+
   requireLogin,
     app.get("/api/files", async (req, res) => {
       const admin = require("../services/firebaseAdmin.js").createFireBaseAdmin();
-
+      admin.storage().bucket().
       admin
         .auth()
         .verifyIdToken(req.query.currentUserToken)
@@ -49,54 +47,48 @@ module.exports = (app) => {
           console.log("Error:");
           console.log(error);
         });
-
-      //const files = await File.find({ uploadAuthor: req.user.id });
     });
+
   requireLogin,
     app.post(
       "/api/files",
-
-      upload.single("file1"), // change file1 name to a dynamic
+      upload.array("formData"),
       (req, res) => {
-        const admin = require("../services/firebaseAdmin.js").createFireBaseAdmin();
+        var adminSDK = require("../services/firebaseAdmin.js").createFireBaseAdmin();
 
-        async function uploadFiles() {
-          // let path = req.body.author + "/" + req.file.path;
-          await admin
-            .storage()
-            .bucket()
-            .upload(req.file.path, {
-              destination: `${req.body.author}/${req.file.filename}`,
-            });
+        // Upload Documents
+        (() => {
+          adminSDK.auth().verifyIdToken(req.query.idToken).then(async (decodedToken) => {
 
-          const { originalname, size, mimetype, filename } = req.file;
 
-          const file = new File({
-            originalname,
-            size,
-            mimetype,
-            filename,
-            uploadAuthor: req.body.author,
-            dateUploaded: Date.now(),
-          });
+            for (let i = 0; i < req.files.length; i++){
+              const destination = `${decodedToken.uid}/${req.files[i].filename}`
+              await adminSDK
+              .storage()
+              .bucket()
+              .upload(req.files[i].path, {
+                destination, 
+              }).catch((err)=>{
+                // Evaluate error
+                  console.log("There was an error while uploading documents to the google cloud storage bucket. See Error:\n", err);
+                  res.status(500).send()
+              });;
+              console.log(req.files[i].filename);
+               // Delete files off local server
+              fs.unlink(`./data/uploads/${req.files[i].filename}`, (err) => {
+                if(err){
+                  console.log("There was an error while deleting files off the local server.\n",err);
+                }
+              
+              });
+            }
 
-          try {
-            await file.save();
-            const fs = require("fs");
-            fs.unlink(`./data/uploads/${req.file.filename}`, (err) => {
-              if (err) {
-                console.log(err);
-              }
-            });
-
-            res.send(file);
-          } catch (err) {
-            res.status(422).send(err);
-          }
-
-          // Delete files off local server
-        }
-        uploadFiles().catch(console.error);
+              
+          }); 
+         
+            // All is great
+            res.status(200).send();
+        })()
       }
     );
 };

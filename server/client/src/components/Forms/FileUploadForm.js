@@ -16,17 +16,9 @@ class FileUploadForm extends React.Component {
   };
 
   renderFormButton = (props) => {
-    console.log(this.props);
     return (
       <Button variant="contained" color="primary" component="label">
         {props.label}
-        {/* <input
-          {...props.input}
-          type="file"
-          accept=".pdf"
-          multiple={false}
-          style={{ display: "none" }}
-        /> */}
         <input
           {...props.input}
           type="file"
@@ -35,16 +27,23 @@ class FileUploadForm extends React.Component {
           multiple={this.props.multiple}
           ref={this.docRef}
           value={undefined}
-          onChange={() => this.onFileSelect(this.docRef.current.files)}
+          encType="multipart/form-data"
         />
       </Button>
     );
   };
 
+  onSubmit = (formValues) => {
+    this.props.onSubmit(formValues.documents);
+  };
   render() {
     return (
-      <form onSubmit={this.props.handleSubmit(this.props.onSubmit)}>
-        <Field name="filess" label="Browse" component={this.renderFormButton} />
+      <form onSubmit={this.props.handleSubmit(this.onSubmit)}>
+        <Field
+          name="documents"
+          label="Browse"
+          component={this.renderFormButton}
+        />
         <Button type="submit" variant="contained" color="primary">
           Submit
         </Button>
@@ -54,7 +53,7 @@ class FileUploadForm extends React.Component {
 }
 
 const wrappedForm = reduxForm({
-  form: "fileUploadForm",
+  form: "documentForm",
 })(FileUploadForm);
 
 export default connect(null)(wrappedForm);

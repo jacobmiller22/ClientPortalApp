@@ -1,13 +1,13 @@
 const express = require("express");
-const mongoose = require("mongoose");
+// const mongoose = require("mongoose");
 // const cookieSession = require("cookie-session");
 // const passport = require("passport");
 const keys = require("./config/keys");
-require("./models/User");
-require("./models/File");
-require("./services/passport");
+// require("./models/User");
+// require("./models/File");
+// // require("./services/passport");
 
-mongoose.connect(keys.mongoURI);
+// mongoose.connect(keys.mongoURI);
 
 const app = express();
 

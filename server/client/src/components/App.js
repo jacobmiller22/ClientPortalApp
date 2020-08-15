@@ -7,15 +7,13 @@ import "../css/App.css";
 
 import Header from "./Header";
 import Landing from "./Landing";
-import Uploader from "./files/Uploader";
-import HistoryDashboard from "./files/fileHistory/HistoryDashboard";
+import Uploader from "./Documents/Uploader";
+import DocumentManager from "./Documents/DocumentManager";
 import LoginPage from "./LoginPage";
-import UserManagement from "./users/UserManagement";
+import UserManager from "./Users/UserManager";
 
 class App extends Component {
   componentDidMount() {
-    //this.props.fetchUser();
-    //this.props.fetchUserFirebase();
     this.props.__changeAuthState__();
   }
 
@@ -27,9 +25,9 @@ class App extends Component {
             <Header />
             <Route exact path="/" component={Landing} />
             <Route exact path="/upload" component={Uploader} />
-            <Route exact path="/history" component={HistoryDashboard} />
+            <Route exact path="/history" component={DocumentManager} />
             <Route exact path="/auth" component={LoginPage} />
-            <Route exact path="/manage_users" component={UserManagement} />
+            <Route exact path="/manage_users" component={UserManager} />
           </div>
         </BrowserRouter>
       </div>

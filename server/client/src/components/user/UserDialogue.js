@@ -1,7 +1,5 @@
 import React, { useEffect } from "react";
 
-import { withFirebase } from "react-redux-firebase";
-
 import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -55,21 +53,21 @@ const UserDialogue = (props) => {
     return (
       <FormControl
         style={{ display: "inline-flex" }}
-        variant='outlined'
+        variant="outlined"
         className={classes.formControl}>
-        <InputLabel htmlFor='permissions-selector'>Permissions</InputLabel>
+        <InputLabel htmlFor="permissions-selector">Permissions</InputLabel>
         <Select
           onChange={handleChange}
           value={state.permissions}
           native
-          label='Permissions'
+          label="Permissions"
           inputProps={{
             name: "permissions",
             id: "permissions-selector",
           }}>
-          <option aria-label='None' value='' />
-          <option value='Client'>Client</option>
-          <option value='Administrator'>Administrator</option>
+          <option aria-label="None" value="" />
+          <option value="Client">Client</option>
+          <option value="Administrator">Administrator</option>
         </Select>
       </FormControl>
     );
@@ -92,9 +90,9 @@ const UserDialogue = (props) => {
     <div>
       <Dialog
         onClose={handleClose}
-        aria-labelledby='simple-dialog-title'
+        aria-labelledby="simple-dialog-title"
         open={open}>
-        <DialogTitle id='simple-dialog-title'>Modify User Info</DialogTitle>
+        <DialogTitle id="simple-dialog-title">Modify User Info</DialogTitle>
         <Typography>Display Name: {user.displayName} </Typography>
         <Typography>Password: </Typography>
 
@@ -103,8 +101,8 @@ const UserDialogue = (props) => {
         {renderPermissionSelector(user)}
         <Button
           className={classes.formControl}
-          variant='contained'
-          color='primary'
+          variant="contained"
+          color="primary"
           onClick={handleSaveChanges}>
           Save Changes
         </Button>
@@ -119,4 +117,4 @@ UserDialogue.propTypes = {
   //selectedValue: PropTypes.string.isRequired,
 };
 
-export default withFirebase(UserDialogue);
+export default UserDialogue;

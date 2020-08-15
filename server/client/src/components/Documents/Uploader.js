@@ -1,4 +1,4 @@
-import React, { useState, setState } from "react";
+import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
@@ -7,8 +7,7 @@ import Typography from "@material-ui/core/Typography";
 import { landingTheme } from "../styling/themes";
 import { MuiThemeProvider } from "@material-ui/core/styles";
 
-import BrowseUpload from "./BrowseUpload";
-import FileUploadForm from "../upload/FileUploadForm";
+import FileUploadForm from "../Forms/FileUploadForm";
 import { connect } from "react-redux";
 import _ from "lodash";
 
@@ -41,27 +40,29 @@ const useStyles = makeStyles({
 
 const Uploader = (props) => {
   const classes = useStyles();
-  const [selectedFiles, setSelectedFiles] = useState([]);
 
   const renderSelectedFiles = () => {
-    console.log(selectedFiles);
-    return _.map(selectedFiles, (file) => {
+    if (!props.selectedFiles || !props.selectedFiles.values) {
+      return null;
+    }
+    const selected = Array.from(props.selectedFiles.values.documents);
+
+    return _.map(selected, (file) => {
       return <div key={file.name}>{file.name}</div>;
     });
   };
 
-  const onFileSelect = (fileList) => {
+  //  const fileArray = Array.from(fileList);
+  const onFormSubmit = (fileList) => {
     const fileArray = Array.from(fileList);
 
-    setSelectedFiles(fileArray);
-  };
+    let formData = new FormData();
 
-  // TODO: FIX ME
-  const onFormSubmit = (formValues) => {
-    console.log("file are being submitted");
+    for (var key in fileArray) {
+      formData.append(`formData`, fileArray[key]);
+    }
 
-    // Fix once firebase is connected
-    props.uploadFormData(formValues);
+    props.uploadFormData(formData);
   };
 
   const renderInstructions = () => {
@@ -99,11 +100,7 @@ const Uploader = (props) => {
       <div>
         <Card className={classes.card} elevation={4}>
           <CardContent>
-            <FileUploadForm
-              onSubmit={onFormSubmit}
-              onFileSelect={onFileSelect}
-              multiple
-            />
+            <FileUploadForm onSubmit={onFormSubmit} multiple />
           </CardContent>
         </Card>
         {renderSelectedFiles()}
@@ -112,4 +109,8 @@ const Uploader = (props) => {
   );
 };
 
-export default connect(null, { uploadFormData })(Uploader);
+const mapStateToProps = (state) => {
+  return { selectedFiles: state.form.documentForm };
+};
+
+export default connect(mapStateToProps, { uploadFormData })(Uploader);

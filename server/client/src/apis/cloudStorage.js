@@ -1,10 +1,11 @@
 import axios from "axios";
 
-export default (token) => {
+export default (url, token) => {
   axios.create({
     baseURL: "",
+    url,
     headers: {
-      Authorizaton: `Client-ID ${token}`,
+      jwt: `JWT-Token ${token}`,
     },
   });
 };

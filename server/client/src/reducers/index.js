@@ -1,12 +1,12 @@
 import { combineReducers } from "redux";
 import { reducer as reduxForm } from "redux-form";
-import filesReducer from "./filesReducer";
+import documentsReducer from "./documentsReducer";
 import usersReducer from "./usersReducer";
 import authReducer from "./authReducer";
 
 export default combineReducers({
   // Custom
-  files: filesReducer,
+  documents: documentsReducer,
   users: usersReducer,
   auth: authReducer,
   // External Libs

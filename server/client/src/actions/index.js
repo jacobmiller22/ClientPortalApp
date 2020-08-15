@@ -1,37 +1,62 @@
 import axios from "axios";
-import { FETCH_FILES, FETCH_USERS } from "./types";
+import cloudStorage from "../apis/cloudStorage";
+import { FETCH_DOCUMENTS, FETCH_USERS } from "./types";
 import { reset } from "redux-form";
 
-import { authRef } from "../firebase";
+import { authRef, storageRef } from "../firebase";
 
 export const uploadFormData = (formData) => async (dispatch) => {
-  const res = await axios.post("/api/files", formData);
-  dispatch(reset("formFiles"));
+  if (!authRef.currentUser) {
+    return;
+  }
+
+  await authRef.currentUser
+    .getIdToken(true)
+    .then(async (idToken) => {
+      await axios.post("/api/files", formData, {
+        params: {
+          idToken,
+        },
+      });
+    })
+    //Dispatch
+    .catch((err) => {
+      // Handle Error
+      console.log(
+        "There was an error while retrieving the current user's jwt id token",
+        err
+      );
+    });
+  dispatch(reset("documentForm"));
 };
 
-export const fetchFiles = (firebase) => async (dispatch) => {
-  // BUG: When /history reloads, the auth object is null
-
-  if (firebase.auth().currentUser) {
-    await firebase
-      .auth()
-      .currentUser.getIdToken(true)
-      .then(async function (idToken) {
-        try {
-          const res = await axios.get("/api/files", {
-            params: {
-              currentUserToken: idToken,
-            },
-          });
-          dispatch({ type: FETCH_FILES, payload: res.data });
-        } catch (err) {
-          console.log(err);
-        }
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+/**
+ * @params n - The number of documents to be fetched. An n < 1 will cause all documents to be fetched
+ **/
+export const fetchDocuments = (n) => async (dispatch) => {
+  console.log("fetch");
+  if (!authRef.currentUser) {
+    return;
   }
+
+  authRef.currentUser.getIdTokenResult().then(async (result) => {
+    console.log(result);
+    if (!result) {
+      return;
+    }
+    // Grab doc list
+    if (n < 1) {
+      // List All
+      return;
+    }
+    let listRef = storageRef.child(`${authRef.currentUser.uid}`);
+    let firstPage = await listRef.list({ maxResults: n });
+
+    dispatch({
+      type: FETCH_DOCUMENTS,
+      payload: firstPage.items,
+    });
+  });
 };
 
 export const fetchUsers = (firebase) => async (dispatch) => {
@@ -124,8 +149,8 @@ export const createUser = (firebase, values) => async (dispatch) => {
   }
 };
 
-export const __changeAuthState__ = () => (dispatch) => {
-  authRef.onAuthStateChanged((user) => {
+export const __changeAuthState__ = () => async (dispatch) => {
+  await authRef.onAuthStateChanged((user) => {
     dispatch({
       type: "USER_STATUS",
       payload: user || null,

@@ -1,5 +1,4 @@
 import React from "react";
-import { withFirebase } from "react-redux-firebase";
 import { reduxForm, Field } from "redux-form";
 import { connect } from "react-redux";
 
@@ -44,9 +43,9 @@ const CreateUserDialogue = (props) => {
     <div>
       <Dialog
         onClose={handleClose}
-        aria-labelledby='simple-dialog-title'
+        aria-labelledby="simple-dialog-title"
         open={open}>
-        <DialogTitle id='simple-dialog-title'>Modify User Info</DialogTitle>
+        <DialogTitle id="simple-dialog-title">Modify User Info</DialogTitle>
         <form
           onSubmit={props.handleSubmit((values) => {
             console.log(props);
@@ -57,54 +56,54 @@ const CreateUserDialogue = (props) => {
           <div>
             <label>First Name:</label>
             <Field
-              placeholder='First Name'
-              type='text'
-              name='firstName'
-              component='input'
+              placeholder="First Name"
+              type="text"
+              name="firstName"
+              component="input"
             />
           </div>
           <div>
             <label>Last Name:</label>
             <Field
-              placeholder='Last Name'
-              type='text'
-              name='lastName'
-              component='input'
+              placeholder="Last Name"
+              type="text"
+              name="lastName"
+              component="input"
             />
           </div>
           <div>
             <label>Email:</label>
             <Field
-              placeholder='Email'
-              type='text'
-              name='email'
-              component='input'
+              placeholder="Email"
+              type="text"
+              name="email"
+              component="input"
             />
           </div>
           <div>
             <label>Password:</label>
             <Field
-              placeholder='Password'
-              type='password'
-              name='password'
-              component='input'
+              placeholder="Password"
+              type="password"
+              name="password"
+              component="input"
             />
           </div>
           <div>
             <label>Phone:</label>
             <Field
-              placeholder='Phone'
-              type='text'
-              name='phone'
-              component='input'
+              placeholder="Phone"
+              type="text"
+              name="phone"
+              component="input"
             />
           </div>
           <div>
             <Button
               className={classes.formControl}
-              variant='contained'
-              color='primary'
-              type='submit'>
+              variant="contained"
+              color="primary"
+              type="submit">
               Create User
             </Button>
           </div>
@@ -156,4 +155,4 @@ export default reduxForm({
   // getFormFromState: (state) => state.createUser.createUserForm,
   validate,
   form: "new_user",
-})(connect(null, actions)(withFirebase(CreateUserDialogue)));
+})(connect(null, actions)(CreateUserDialogue));

@@ -1,7 +1,7 @@
 import React from "react";
 
 import { connect } from "react-redux";
-import { withFirebase } from "react-redux-firebase";
+
 // Material UI
 import { Box, Button, Typography } from "@material-ui/core";
 import { MuiThemeProvider } from "@material-ui/core/styles";
@@ -29,9 +29,9 @@ const UserManagement = (props) => {
         <label>
           <Button
             onClick={handleClickOpenCUDialogue}
-            variant='contained'
-            color='primary'
-            display='inline'>
+            variant="contained"
+            color="primary"
+            display="inline">
             <CreateUserDialogue
               open={cUDialogueOpen}
               onClose={handleCloseCUDialogue}
@@ -70,12 +70,12 @@ const UserManagement = (props) => {
             textAlign: "center",
             margin: "auto",
           }}>
-          <Typography display='inline' variant='h4'>
+          <Typography display="inline" variant="h4">
             Manage users here
           </Typography>
 
-          <Box alignItems='center' justifyContent='center'>
-            <Button variant='contained' color='primary' display='inline'>
+          <Box alignItems="center" justifyContent="center">
+            <Button variant="contained" color="primary" display="inline">
               Publish Changes
             </Button>
             {renderCreateUserDialogue()}
@@ -99,4 +99,4 @@ function mapStateToProps(state) {
   return state;
 }
 
-export default connect(null, { fetchUsers })(withFirebase(UserManagement));
+export default connect(null, { fetchUsers })(UserManagement);
