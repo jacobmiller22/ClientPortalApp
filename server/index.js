@@ -22,7 +22,7 @@ const app = express();
 
 app.use(express.json());
 
-require("./routes/authRoutes")(app);
+require("./routes/userRoutes")(app);
 require("./routes/userManagementRoutes")(app);
 require("./routes/fileRoutes")(app);
 

@@ -4,7 +4,7 @@ module.exports = async (req, res, next) => {
 
     await admin
       .auth()
-      .verifyIdToken(req.query.currentUserToken || req.body.senderToken)
+      .verifyIdToken(req.query.idToken)
       .then(async function (decodedToken) {
         req.decodedToken = decodedToken;
       });

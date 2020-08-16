@@ -3,19 +3,11 @@ import { connect } from "react-redux";
 
 import UserList from "./UserList";
 
-import { fetchUsers } from "../../actions";
-
 class UserManager extends React.Component {
-  componentDidMount() {
-    // Make request for Users
-    // Fetch Users
-  }
-
   renderUserList() {
     if (!this.props.currentUser) {
       return <div> Loading...</div>;
     }
-
     return <UserList />;
   }
 
@@ -25,7 +17,7 @@ class UserManager extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  return { users: state.users };
+  return { currentUser: state.auth };
 };
 
-export default connect(mapStateToProps, { fetchUsers })(UserManager);
+export default connect(mapStateToProps)(UserManager);

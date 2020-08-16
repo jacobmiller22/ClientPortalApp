@@ -6,11 +6,12 @@ import { reset } from "redux-form";
 import { authRef, storageRef } from "../firebase";
 
 export const uploadFormData = (formData) => async (dispatch) => {
-  if (!authRef.currentUser) {
+  const { currentUser } = authRef;
+  if (!currentUser) {
     return;
   }
 
-  await authRef.currentUser
+  await currentUser
     .getIdToken(true)
     .then(async (idToken) => {
       await axios.post("/api/files", formData, {
@@ -34,13 +35,13 @@ export const uploadFormData = (formData) => async (dispatch) => {
  * @params n - The number of documents to be fetched. An n < 1 will cause all documents to be fetched
  **/
 export const fetchDocuments = (n) => async (dispatch) => {
-  console.log("fetch");
-  if (!authRef.currentUser) {
+  const { currentUser } = authRef;
+
+  if (!currentUser) {
     return;
   }
 
-  authRef.currentUser.getIdTokenResult().then(async (result) => {
-    console.log(result);
+  currentUser.getIdTokenResult().then(async (result) => {
     if (!result) {
       return;
     }
@@ -49,7 +50,7 @@ export const fetchDocuments = (n) => async (dispatch) => {
       // List All
       return;
     }
-    let listRef = storageRef.child(`${authRef.currentUser.uid}`);
+    let listRef = storageRef.child(`${currentUser.uid}`);
     let firstPage = await listRef.list({ maxResults: n });
 
     dispatch({
@@ -59,34 +60,59 @@ export const fetchDocuments = (n) => async (dispatch) => {
   });
 };
 
-export const fetchUsers = (firebase) => async (dispatch) => {
-  // Grabs the list of users from backend
-  if (firebase.auth().currentUser) {
-    await firebase
-      .auth()
-      .currentUser.getIdTokenResult()
-      .then(async (idTokenResult) => {
-        try {
-          // Confirm admin role
-          if (idTokenResult.claims.administrator) {
-            console.log("authorized user");
-
-            const res = await axios.get("/api/users", {
-              params: {
-                currentUserToken: idTokenResult.token,
-              },
-            });
-            dispatch({ type: FETCH_USERS, payload: res.data });
-          } else {
-            console.log("unauth");
-            console.log(idTokenResult);
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      });
+export const fetchUsers = (n) => async (dispatch) => {
+  const { currentUser } = authRef;
+  console.log(currentUser);
+  if (!currentUser) {
+    return;
   }
+  currentUser.getIdTokenResult().then(async (result) => {
+    console.log(result);
+    if (!result.claims || !result.claims.administrator) {
+      //User is NOT admin
+      console.log(currentUser);
+      return;
+    }
+
+    const res = await axios.get("/api/users", {
+      params: {
+        idToken: result.token,
+        maxResults: n,
+      },
+    });
+    dispatch({
+      type: FETCH_USERS,
+      payload: res.data,
+    });
+  });
 };
+
+// Grabs the list of users from backend
+// if (firebase.auth().currentUser) {
+//   await firebase
+//     .auth()
+//     .currentUser.getIdTokenResult()
+//     .then(async (idTokenResult) => {
+//       try {
+//         // Confirm admin role
+//         if (idTokenResult.claims.administrator) {
+//           console.log("authorized user");
+
+//           const res = await axios.get("/api/users", {
+//             params: {
+//               currentUserToken: idTokenResult.token,
+//             },
+//           });
+//           dispatch({ type: FETCH_USERS, payload: res.data });
+//         } else {
+//           console.log("unauth");
+//           console.log(idTokenResult);
+//         }
+//       } catch (error) {
+//         console.log(error);
+//       }
+//     });
+// }
 
 export const changePermissions = (firebase, user, role) => async (dispatch) => {
   if (firebase.auth().currentUser) {
