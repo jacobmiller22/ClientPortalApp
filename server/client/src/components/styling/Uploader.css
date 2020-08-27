@@ -1,0 +1,21 @@
+.wrapper {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  text-align: center;
+}
+.wrapper .content {
+  display: flex;
+  flex-flow: column nowrap;
+
+  align-items: center;
+  background-color: burlywood;
+}
+li {
+  text-align: start;
+}
+/* style={{
+    justifyContent: "center",
+    alignItems: "center",
+    display: "flex",
+  }} */

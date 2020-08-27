@@ -1,9 +1,11 @@
 import React, { Component } from "react";
 import { BrowserRouter, Route } from "react-router-dom";
 import { connect } from "react-redux";
-import * as actions from "../actions";
+import { __changeAuthState__ } from "../actions";
 
-import "../css/App.css";
+import "../components/styling/App.css";
+import { ThemeProvider } from "@material-ui/core/styles";
+import { theme } from "./styling/themes";
 
 import Header from "./Header";
 import Landing from "./Landing";
@@ -19,20 +21,18 @@ class App extends Component {
 
   render() {
     return (
-      <div>
-        <BrowserRouter>
-          <div className="container">
-            <Header />
-            <Route exact path="/" component={Landing} />
-            <Route exact path="/upload" component={Uploader} />
-            <Route exact path="/history" component={DocumentManager} />
-            <Route exact path="/auth" component={LoginPage} />
-            <Route exact path="/manage_users" component={UserManager} />
-          </div>
-        </BrowserRouter>
-      </div>
+      <BrowserRouter>
+        <ThemeProvider theme={theme}>
+          <Header />
+          <Route exact path="/" component={Landing} />
+          <Route exact path="/upload" component={Uploader} />
+          <Route exact path="/history" component={DocumentManager} />
+          <Route exact path="/auth" component={LoginPage} />
+          <Route exact path="/manage_users" component={UserManager} />
+        </ThemeProvider>
+      </BrowserRouter>
     );
   }
 }
 
-export default connect(null, actions)(App);
+export default connect(null, { __changeAuthState__ })(App);

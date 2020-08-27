@@ -5,19 +5,17 @@ import { reduxForm, Field } from "redux-form";
 import Button from "@material-ui/core/Button";
 
 class FileUploadForm extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.docRef = React.createRef();
-  }
-
   onFileSelect = (fileList) => {
     this.props.onFileSelect(fileList);
   };
 
   renderFormButton = (props) => {
     return (
-      <Button variant="contained" color="primary" component="label">
+      <Button
+        variant="contained"
+        color="primary"
+        component="label"
+        style={{ margin: "5px" }}>
         {props.label}
         <input
           {...props.input}
@@ -25,7 +23,6 @@ class FileUploadForm extends React.Component {
           accept=".pdf"
           style={{ display: "none" }}
           multiple={this.props.multiple}
-          ref={this.docRef}
           value={undefined}
           encType="multipart/form-data"
         />
@@ -44,7 +41,11 @@ class FileUploadForm extends React.Component {
           label="Browse"
           component={this.renderFormButton}
         />
-        <Button type="submit" variant="contained" color="primary">
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          style={{ margin: "5px" }}>
           Submit
         </Button>
       </form>

@@ -25,7 +25,7 @@ class DocumentDetail extends React.Component {
     const clickHandler = () => {
       setTimeout(() => {
         URL.revokeObjectURL(url);
-        this.removeEventListener("click", clickHandler);
+        a.removeEventListener("click", clickHandler);
       }, 150);
     };
 
@@ -34,16 +34,14 @@ class DocumentDetail extends React.Component {
   };
 
   renderDetail() {
-    const { meta, url } = this.state;
+    const { meta } = this.state;
     return (
       <div key={meta.fullPath}>
-        <span>
-          <Typography display="inline">
-            <strong>Name: </strong>
-          </Typography>
-          <Typography display="inline">{meta.name}</Typography>
-          <Button onClick={this.onViewClick}>View</Button>
-        </span>
+        <Typography display="inline">
+          <strong>Name: </strong>
+        </Typography>
+        <Typography display="inline">{meta.name}</Typography>
+        <Button onClick={this.onViewClick}>View</Button>
       </div>
     );
   }

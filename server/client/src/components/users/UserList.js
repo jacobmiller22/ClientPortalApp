@@ -1,12 +1,24 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import { Typography, List, ListItem } from "@material-ui/core";
+import {
+  Typography,
+  List,
+  ListItem,
+  IconButton,
+  Button,
+  Dialog,
+  DialogTitle,
+} from "@material-ui/core";
 import SupervisorAccountSharpIcon from "@material-ui/icons/SupervisorAccountSharp";
+import VerifiedUserIcon from "@material-ui/icons/VerifiedUser";
+import EditIcon from "@material-ui/icons/Edit";
 
 import { fetchUsers } from "../../actions";
 
 class UserList extends React.Component {
+  state = { open: false };
+
   componentDidMount() {
     // Make request for Users
     // Fetch Users
@@ -19,12 +31,47 @@ class UserList extends React.Component {
     }
   }
 
+  handleDialogOpen = () => this.setState({ open: true });
+
+  handleDialogClose = () => this.setState({ open: false });
+
+  renderDialogContent() {
+    return (
+      <>
+        <DialogTitle id="simple-dialog-title">Modify User Info</DialogTitle>
+      </>
+    );
+  }
+
+  renderVerified(user) {
+    if (user.emailVerified) {
+      return <VerifiedUserIcon />;
+    }
+    return (
+      <Button variant="contained" color="primary">
+        Verify Email
+      </Button>
+    );
+  }
+
+  renderAdminActions(user) {
+    if (user.customClaims && user.customClaims.administrator) {
+      return (
+        <IconButton onClick={this.handleModalOpen}>
+          <EditIcon color="primary" />
+        </IconButton>
+      );
+    }
+  }
+
   renderUserList = () => {
     return this.props.users.map((user) => {
       return (
         <ListItem key={user.email}>
           {this.renderAdminIcon(user)}
           <Typography display="inline">{user.email}</Typography>
+          {this.renderAdminActions(user)}
+          {this.renderVerified(user)}
         </ListItem>
       );
     });
@@ -32,10 +79,17 @@ class UserList extends React.Component {
 
   render() {
     return (
-      <List>
-        <Typography variant="h5">Users on record</Typography>
-        {this.renderUserList()}
-      </List>
+      <div>
+        <Dialog open={this.state.open} onClose={this.handleModalClose}>
+          {this.renderDialogContent()}
+        </Dialog>
+
+        <List>
+          <Typography variant="h5">Users on record</Typography>
+
+          {this.renderUserList()}
+        </List>
+      </div>
     );
   }
 }

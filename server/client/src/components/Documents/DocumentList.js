@@ -9,19 +9,6 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import DocumentDetail from "./DocumentDetail";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-    maxWidth: 752,
-  },
-  demo: {
-    backgroundColor: theme.palette.background.paper,
-  },
-  title: {
-    margin: theme.spacing(4, 0, 2),
-  },
-}));
-
 class DocumentList extends React.Component {
   componentDidMount() {
     this.props.fetchDocuments(100);
@@ -39,10 +26,12 @@ class DocumentList extends React.Component {
 
   render() {
     return (
-      <List style={{ justifyContent: "center" }}>
-        <Typography variant="h5">Files on record</Typography>
-        {this.renderList()}
-      </List>
+      <div>
+        <List>
+          <Typography variant="h5">Files on record</Typography>
+          {this.renderList()}
+        </List>
+      </div>
     );
   }
 }

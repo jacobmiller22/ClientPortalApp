@@ -10,21 +10,15 @@ import { Link } from "react-router-dom";
 const Landing = () => {
   return (
     <div style={{ textAlign: "center" }}>
-      <ThemeProvider theme={globalTheme}>
-        <ThemeProvider theme={landingTheme}>
-          <Typography color='primary'>
-            Welcome to Stafford Tax and Business Advisors' Online Document
-            Portal
-          </Typography>
-          <Button
-            color='primary'
-            variant='contained'
-            component={Link}
-            to='/upload'>
-            Get Started
-          </Button>
-        </ThemeProvider>
-      </ThemeProvider>
+      <Typography color="secondary" variant="h5">
+        Welcome to Stafford Tax and Business Advisors' Online Document Portal
+      </Typography>
+      <Typography color="secondary" variant="h6">
+        Upload your documents safely and securely via the portal!
+      </Typography>
+      <Button color="primary" variant="contained" component={Link} to="/upload">
+        Get Started
+      </Button>
     </div>
   );
 };
