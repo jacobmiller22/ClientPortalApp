@@ -3,18 +3,12 @@ import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 
 import { makeStyles } from "@material-ui/core/styles";
-import {
-  AppBar,
-  Toolbar,
-  Typography,
-  Button,
-  IconButton,
-} from "@material-ui/core";
+import { AppBar, Toolbar, Typography, Button } from "@material-ui/core";
 
 import { signUserIn, signUserOut } from "../actions";
 
 //import "../css/Header.css";
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   appBar: {
     backgroundColor: "black",
   },
@@ -24,10 +18,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
   },
-  menuButton: {},
-  appBarItems: {
-    font: "timesNewRoman",
-  },
+
   rightSideItems: {
     flexGrow: 1,
   },
@@ -37,7 +28,7 @@ function Header(props) {
   const classes = useStyles();
 
   const renderAuth = () => {
-    if (props.currentAuthUser) {
+    if (props.currentUser) {
       return (
         <Button color="inherit" onClick={() => props.signUserOut()}>
           logout
@@ -88,7 +79,7 @@ function Header(props) {
 }
 
 const mapStateToProps = (state) => {
-  return { currentAuthUser: state.auth };
+  return { currentUser: state.auth.currentUser };
 };
 
 export default connect(mapStateToProps, {

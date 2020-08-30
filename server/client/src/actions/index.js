@@ -1,34 +1,38 @@
 import axios from "axios";
-import cloudStorage from "../apis/cloudStorage";
-import { FETCH_DOCUMENTS, FETCH_USERS } from "./types";
+
+import * as types from "./types";
 import { reset } from "redux-form";
 
 import { authRef, storageRef } from "../firebase";
 
+const verifyAuthorization = (claims) => {
+  if (!claims || !claims.administrator) {
+    //User is NOT authorized to make request
+    console.log("User is not authorized");
+    return false;
+  }
+  return true;
+};
+
 export const uploadFormData = (formData) => async (dispatch) => {
   const { currentUser } = authRef;
-  if (!currentUser) {
-    return;
-  }
 
-  await currentUser
-    .getIdToken(true)
-    .then(async (idToken) => {
-      await axios.post("/api/files", formData, {
-        params: {
-          idToken,
-        },
-      });
-    })
-    //Dispatch
-    .catch((err) => {
-      // Handle Error
-      console.log(
-        "There was an error while retrieving the current user's jwt id token",
-        err
-      );
+  if (!currentUser) return;
+
+  currentUser.getIdToken(false).then(async (idToken) => {
+    const res = await axios.post("/api/files", formData, {
+      params: {
+        idToken,
+      },
     });
-  dispatch(reset("documentForm"));
+
+    dispatch({
+      type: types.UPLOAD_DOCUMENTS,
+      payload: res.data,
+    });
+
+    dispatch(reset("documentForm"));
+  });
 };
 
 /**
@@ -37,24 +41,19 @@ export const uploadFormData = (formData) => async (dispatch) => {
 export const fetchDocuments = (n) => async (dispatch) => {
   const { currentUser } = authRef;
 
-  if (!currentUser) {
-    return;
-  }
+  if (!currentUser) return;
 
   currentUser.getIdTokenResult().then(async (result) => {
-    if (!result) {
-      return;
-    }
-    // Grab doc list
     if (n < 1) {
       // List All
       return;
     }
+
     let listRef = storageRef.child(`${currentUser.uid}`);
     let firstPage = await listRef.list({ maxResults: n });
 
     dispatch({
-      type: FETCH_DOCUMENTS,
+      type: types.FETCH_DOCUMENTS,
       payload: firstPage.items,
     });
   });
@@ -62,17 +61,11 @@ export const fetchDocuments = (n) => async (dispatch) => {
 
 export const fetchUsers = (n) => async (dispatch) => {
   const { currentUser } = authRef;
-  console.log(currentUser);
-  if (!currentUser) {
-    return;
-  }
+
+  if (!currentUser) return;
+
   currentUser.getIdTokenResult().then(async (result) => {
-    console.log(result);
-    if (!result.claims || !result.claims.administrator) {
-      //User is NOT admin
-      console.log(currentUser);
-      return;
-    }
+    if (!verifyAuthorization(result.claims)) return;
 
     const res = await axios.get("/api/users", {
       params: {
@@ -81,105 +74,78 @@ export const fetchUsers = (n) => async (dispatch) => {
       },
     });
     dispatch({
-      type: FETCH_USERS,
+      type: types.FETCH_USERS,
       payload: res.data,
     });
   });
 };
 
-// Grabs the list of users from backend
-// if (firebase.auth().currentUser) {
-//   await firebase
-//     .auth()
-//     .currentUser.getIdTokenResult()
-//     .then(async (idTokenResult) => {
-//       try {
-//         // Confirm admin role
-//         if (idTokenResult.claims.administrator) {
-//           console.log("authorized user");
+export const modifyUserPermissions = (uid, newPermissions) => async (
+  dispatch
+) => {
+  const { currentUser } = authRef;
 
-//           const res = await axios.get("/api/users", {
-//             params: {
-//               currentUserToken: idTokenResult.token,
-//             },
-//           });
-//           dispatch({ type: FETCH_USERS, payload: res.data });
-//         } else {
-//           console.log("unauth");
-//           console.log(idTokenResult);
-//         }
-//       } catch (error) {
-//         console.log(error);
-//       }
-//     });
-// }
+  if (!currentUser) return;
 
-export const changePermissions = (firebase, user, role) => async (dispatch) => {
-  if (firebase.auth().currentUser) {
-    await firebase
-      .auth()
-      .currentUser.getIdTokenResult()
-      .then(async (idTokenResult) => {
-        try {
-          // Confirm admin role
-          if (idTokenResult.claims.administrator) {
-            console.log("authorized user");
+  currentUser.getIdTokenResult().then(async (result) => {
+    if (!verifyAuthorization(result.claims)) return;
 
-            const payload = {
-              senderToken: idTokenResult.token,
-              user,
-              role,
-            };
-            const res = await axios.post("/api/grant_role", payload);
-            console.log(res);
-          } else {
-            console.log("unauth");
-            console.log(idTokenResult);
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      });
-  }
+    const res = await axios.patch("/api/user", newPermissions, {
+      params: {
+        idToken: result.idToken,
+        uid,
+      },
+    });
+
+    dispatch({
+      type: types.MODIFY_USER_PERMISSIONS,
+      payload: res.data,
+    });
+  });
 };
 
-export const createUser = (firebase, values) => async (dispatch) => {
-  if (firebase.auth().currentUser) {
-    await firebase
-      .auth()
-      .currentUser.getIdTokenResult()
-      .then(async (idTokenResult) => {
-        try {
-          if (idTokenResult.claims.administrator) {
-            // polish values
+export const createUser = (credentials) => async (dispatch) => {
+  const { currentUser } = authRef;
 
-            const payload = {
-              senderToken: idTokenResult.token,
-              user: {
-                email: values.email,
-                displayName: `${values.firstName.trim()} ${values.lastName.trim()}`,
-                phoneNumber: `+1${values.phone}`,
-                password: values.password,
-              },
-            };
-            const res = axios.post("/api/create_user", payload);
-            dispatch(reset("formFiles"));
-          } else {
-            console.log("unauth");
-            console.log(idTokenResult);
-          }
-        } catch (err) {
-          console.log(err);
-        }
-      });
+  if (!currentUser) {
+    return;
   }
+
+  currentUser.getIdTokenResult().then(async (result) => {
+    if (!verifyAuthorization(result.claims)) return;
+
+    const res = await axios.post("/api/create_user", credentials, {
+      params: {
+        idToken: result.idToken,
+      },
+    });
+
+    dispatch({
+      type: types.CREATE_USER,
+      payload: res.data,
+    });
+  });
 };
 
 export const __changeAuthState__ = () => async (dispatch) => {
   await authRef.onAuthStateChanged((user) => {
     dispatch({
-      type: "USER_STATUS",
+      type: types.USER_STATUS,
       payload: user || null,
+    });
+
+    if (!user) {
+      return;
+    }
+    // Check User's permissions
+    user.getIdTokenResult().then(async (result) => {
+      if (result.claims) {
+        // User has a custom claim
+        dispatch({
+          type: types.USER_PERMISSIONS,
+          payload: result.claims,
+        });
+      }
     });
   });
 };

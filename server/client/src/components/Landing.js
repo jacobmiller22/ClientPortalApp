@@ -3,8 +3,6 @@ import React from "react";
 // MUI
 import { Button, Typography } from "@material-ui/core";
 // Styling
-import { globalTheme, landingTheme } from "./styling/themes";
-import { ThemeProvider } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
 
 const Landing = () => {

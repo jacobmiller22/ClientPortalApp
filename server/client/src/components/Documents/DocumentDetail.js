@@ -2,6 +2,10 @@ import React from "react";
 
 import { Button, Typography } from "@material-ui/core";
 
+import LoadMessage from "../Loading/LoadMessage";
+
+import { formatBytesWhole } from "../../utils/formatting";
+
 class DocumentDetail extends React.Component {
   state = { meta: null, url: null };
 
@@ -33,24 +37,39 @@ class DocumentDetail extends React.Component {
     a.click();
   };
 
+  renderViewButton() {
+    if (!this.state.url) {
+      //<LoadMessage inline color="primary" message="url" />
+      return null;
+    }
+    return (
+      <Button onClick={this.onViewClick} color="primary">
+        View
+      </Button>
+    );
+  }
+
   renderDetail() {
     const { meta } = this.state;
     return (
       <div key={meta.fullPath}>
         <Typography display="inline">
-          <strong>Name: </strong>
+          <strong>Name: </strong> {meta.name}
         </Typography>
-        <Typography display="inline">{meta.name}</Typography>
-        <Button onClick={this.onViewClick}>View</Button>
+        <Typography display="inline">
+          <strong>Size: </strong> {formatBytesWhole(meta.size)}
+        </Typography>
+
+        {this.renderViewButton()}
       </div>
     );
   }
 
   render() {
-    if (this.state.meta && this.state.url) {
+    if (this.state.meta) {
       return <div>{this.renderDetail()}</div>;
     }
-    return null;
+    return <LoadMessage color="primary" message="Loading File" />;
   }
 }
 

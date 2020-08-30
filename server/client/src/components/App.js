@@ -11,8 +11,9 @@ import Header from "./Header";
 import Landing from "./Landing";
 import Uploader from "./Documents/Uploader";
 import DocumentManager from "./Documents/DocumentManager";
-import LoginPage from "./LoginPage";
 import UserManager from "./Users/UserManager";
+import SignIn from "./Forms/Authentication/SignIn";
+import Footer from "./Footer";
 
 class App extends Component {
   componentDidMount() {
@@ -27,8 +28,9 @@ class App extends Component {
           <Route exact path="/" component={Landing} />
           <Route exact path="/upload" component={Uploader} />
           <Route exact path="/history" component={DocumentManager} />
-          <Route exact path="/auth" component={LoginPage} />
+          <Route exact path="/auth" component={SignIn} />
           <Route exact path="/manage_users" component={UserManager} />
+          <Footer />
         </ThemeProvider>
       </BrowserRouter>
     );

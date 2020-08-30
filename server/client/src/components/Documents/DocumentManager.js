@@ -1,9 +1,12 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import { AppBar, Toolbar, Button } from "@material-ui/core";
+import { Toolbar, Button } from "@material-ui/core";
+
+import "../styling/Center.css";
 
 import DocumentList from "./DocumentList";
+import LoadMessage from "../Loading/LoadMessage";
 
 class DocumentManager extends React.Component {
   /**
@@ -28,25 +31,29 @@ class DocumentManager extends React.Component {
 
   renderFileList() {
     if (!this.props.currentUser) {
-      return <div> Loading...</div>;
+      return (
+        <div className="centered">
+          <LoadMessage color="primary" message="Signing in..." />
+        </div>
+      );
     }
 
-    return (
-      <div>
-        {this.renderOptions()}
-        <DocumentList />
-      </div>
-    );
+    return <DocumentList />;
   }
 
   render() {
-    return <div>{this.renderFileList()}</div>;
+    return (
+      <div>
+        {this.renderOptions()}
+        {this.renderFileList()}
+      </div>
+    );
   }
 }
 
 const mapStateToProps = (state) => {
   return {
-    currentUser: state.auth,
+    currentUser: state.auth.currentUser,
   };
 };
 

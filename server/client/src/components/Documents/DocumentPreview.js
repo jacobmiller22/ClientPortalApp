@@ -11,7 +11,7 @@ class DocumentPreview extends React.Component {
 
   render() {
     console.log(this.state.previewURL);
-    return <img src={this.state.previewURL} />;
+    return <img src={this.state.previewURL} alt="Preview" />;
   }
 }
 

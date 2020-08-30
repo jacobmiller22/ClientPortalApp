@@ -1,21 +1,32 @@
 import React from "react";
 import { connect } from "react-redux";
-import { fetchDocuments } from "../../actions";
 
-import _ from "lodash";
-
-import { Grid, List, ListItem, Typography } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { List, ListItem, Typography } from "@material-ui/core";
+import "../styling/Center.css";
 
 import DocumentDetail from "./DocumentDetail";
+import LoadMessage from "../Loading/LoadMessage";
+
+import { fetchDocuments } from "../../actions";
 
 class DocumentList extends React.Component {
   componentDidMount() {
     this.props.fetchDocuments(100);
+    console.log("Fetching documents!");
   }
 
   renderList() {
-    return this.props.documents.map((doc) => {
+    const { documents } = this.props;
+    console.log(documents);
+    if (!documents.length) {
+      return (
+        <div>
+          <LoadMessage color="primary" message="Loading files" />
+        </div>
+      );
+    }
+
+    return documents.map((doc) => {
       return (
         <ListItem key={doc.fullPath}>
           <DocumentDetail doc={doc} />
@@ -26,7 +37,7 @@ class DocumentList extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className="centered">
         <List>
           <Typography variant="h5">Files on record</Typography>
           {this.renderList()}

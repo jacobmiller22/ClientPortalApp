@@ -1,10 +1,19 @@
-// import { FETCH_USER, FETCH_USER_FIREBASE } from "../actions/types";
+import { USER_STATUS, USER_PERMISSIONS } from "../actions/types";
 
-export default function (state = null, action) {
+export const authReducer = (state = null, action) => {
   switch (action.type) {
-    case "USER_STATUS":
+    case USER_STATUS:
       return action.payload || false;
     default:
       return state;
   }
-}
+};
+
+export const authPermissionsReducer = (state = {}, action) => {
+  switch (action.type) {
+    case USER_PERMISSIONS:
+      return action.payload;
+    default:
+      return state;
+  }
+};

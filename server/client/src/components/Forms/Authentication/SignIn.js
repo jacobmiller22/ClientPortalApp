@@ -1,12 +1,10 @@
-import React, { useState } from "react";
-// UI
-import { Button } from "@material-ui/core";
-
-// Redux
+import React from "react";
+import { connect } from "react-redux";
 import { reduxForm, Field } from "redux-form";
-import { useSelector, connect } from "react-redux";
 
-import { signUserIn, signUserOut } from "../actions";
+import { Button, TextField } from "@material-ui/core";
+
+import { signUserIn, signUserOut } from "../../../actions";
 
 const LoginPage = (props) => {
   const onSubmit = (values) => {
@@ -31,7 +29,7 @@ const LoginPage = (props) => {
         <Field
           name="password"
           type="password"
-          component="input"
+          component={TextField}
           placeholder="Password"
         />
         <Button
@@ -45,15 +43,11 @@ const LoginPage = (props) => {
     );
   };
 
-  return (
-    <div style={{ display: "flex", justifyContent: "center" }}>
-      {renderContent()}
-    </div>
-  );
+  return <div>{renderContent()}</div>;
 };
 
 const mapStateToProps = (state) => {
-  return { auth: state.auth };
+  return { currentUser: state.auth.currentUser };
 };
 
 const wrappedForm = reduxForm({
