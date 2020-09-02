@@ -114,9 +114,10 @@ export const createUser = (credentials) => async (dispatch) => {
   currentUser.getIdTokenResult().then(async (result) => {
     if (!verifyAuthorization(result.claims)) return;
 
-    const res = await axios.post("/api/create_user", credentials, {
-      params: {
-        idToken: result.idToken,
+    console.log(result);
+    const res = await axios.post("/api/users", credentials, {
+      headers: {
+        idToken: result.token,
       },
     });
 

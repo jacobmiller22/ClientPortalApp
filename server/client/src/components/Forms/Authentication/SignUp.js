@@ -1,8 +1,10 @@
 import React from "react";
-
+import { connect } from "react-redux";
 import { reduxForm, Field } from "redux-form";
 
 import { Button, Typography, TextField } from "@material-ui/core";
+
+import { createUser } from "../../../actions";
 
 class SignUp extends React.Component {
   onSubmit = (values) => {
@@ -10,6 +12,8 @@ class SignUp extends React.Component {
     // props.signUserIn(email, password);
     // createnewUser action
     console.log("New user is:", values);
+    console.log(this.props);
+    this.props.createUser(values);
   };
 
   renderAdmin() {
@@ -17,6 +21,10 @@ class SignUp extends React.Component {
       return <Typography>Privileges</Typography>;
     }
   }
+
+  // () => (
+  //   <TextField id="filled-basic" variant="filled" label="Email" />
+  // )
 
   renderForm() {
     return (
@@ -26,9 +34,7 @@ class SignUp extends React.Component {
         <Field
           name="email"
           type="text"
-          component={() => (
-            <TextField id="filled-basic" variant="filled" label="Email" />
-          )}
+          component="input"
           placeholder="Email"></Field>
 
         <br />
@@ -37,9 +43,7 @@ class SignUp extends React.Component {
         <Field
           name="password"
           type="password"
-          component={() => (
-            <TextField id="filled-basic" variant="filled" label="Email" />
-          )}
+          component="input"
           placeholder="Password"
         />
 
@@ -70,4 +74,6 @@ class SignUp extends React.Component {
   }
 }
 
-export default reduxForm({ form: "signUpForm" })(SignUp);
+const wrappedForm = reduxForm({ form: "signUpForm" })(SignUp);
+
+export default connect(null, { createUser })(wrappedForm);

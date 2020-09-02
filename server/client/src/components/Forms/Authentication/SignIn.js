@@ -9,6 +9,7 @@ import { signUserIn, signUserOut } from "../../../actions";
 const LoginPage = (props) => {
   const onSubmit = (values) => {
     const { email, password } = values;
+    console.log(values);
     props.signUserIn(email, password);
   };
 
@@ -29,7 +30,7 @@ const LoginPage = (props) => {
         <Field
           name="password"
           type="password"
-          component={TextField}
+          component="input"
           placeholder="Password"
         />
         <Button

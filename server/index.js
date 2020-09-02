@@ -23,7 +23,7 @@ const app = express();
 app.use(express.json());
 
 require("./routes/userRoutes")(app);
-require("./routes/userManagementRoutes")(app);
+require("./routes/adminRoutes")(app);
 require("./routes/fileRoutes")(app);
 
 const PORT = process.env.PORT || 5000;
