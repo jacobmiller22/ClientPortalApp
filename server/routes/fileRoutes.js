@@ -24,72 +24,67 @@ var upload = multer({
 });
 
 module.exports = (app) => {
-  requireLogin,
-    app.get("/api/files", async (req, res) => {
-      const admin = require("../services/firebaseAdmin.js").createFireBaseAdmin();
-      admin
-        .storage()
-        .bucket()
-        .admin.auth()
-        .verifyIdToken(req.query.currentUserToken)
-        .then(async function (decodedToken) {
-          console.log(decodedToken);
-          let uid = decodedToken.uid;
+  app.get("/api/files", requireLogin, async (req, res) => {
+    const admin = require("../services/firebaseAdmin.js").createFireBaseAdmin();
+    // admin
+    //   .storage()
+    //   .bucket()
+    //   .admin.auth()
+    //   .verifyIdToken(req.query.currentUserToken)
+    //   .then(async (decodedToken) => {
+    //     let uid = decodedToken.uid;
 
-          try {
-            const files = await File.find({ uploadAuthor: uid });
-            res.send(files);
-          } catch (error) {
-            console.log(error);
-          }
-        })
-        .catch(function (error) {
-          console.log("Error:");
-          console.log(error);
-        });
-    });
+    //     try {
+    //       const files = await File.find({ uploadAuthor: uid });
+    //       res.send(files);
+    //     } catch (error) {
+    //       console.log(error);
+    //     }
+    //   })
+    //   .catch(function (error) {
+    //     console.log("Error:");
+    //     console.log(error);
+    //   });
+  });
 
-  requireLogin,
-    app.post("/api/files", upload.array("formData"), (req, res) => {
-      var adminSDK = require("../services/firebaseAdmin.js").createFireBaseAdmin();
+  app.post(
+    "/api/files",
+    requireLogin,
+    upload.array("formData"),
+    async (req, res) => {
+      const adminSDK = require("../services/firebaseAdmin.js").createFireBaseAdmin();
 
-      // Upload Documents
-      (() => {
-        adminSDK
-          .auth()
-          .verifyIdToken(req.query.idToken)
-          .then(async (decodedToken) => {
-            for (let i = 0; i < req.files.length; i++) {
-              const destination = `${decodedToken.uid}/${req.files[i].filename}`;
-              await adminSDK
-                .storage()
-                .bucket()
-                .upload(req.files[i].path, {
-                  destination,
-                })
-                .catch((err) => {
-                  // Evaluate error
-                  console.log(
-                    "There was an error while uploading documents to the google cloud storage bucket. See Error:\n",
-                    err
-                  );
-                  res.status(500).send();
-                });
-              console.log(req.files[i].filename);
-              // Delete files off local server
-              fs.unlink(`./data/uploads/${req.files[i].filename}`, (err) => {
-                if (err) {
-                  console.log(
-                    "There was an error while deleting files off the local server.\n",
-                    err
-                  );
-                }
-              });
-            }
+      // upload documents
+      for (let i = 0; i < req.files.length; i++) {
+        const { authorizedBy } = req;
+        console.log("auth by", authorizedBy);
+        const destination = `User-Documents/U-${authorizedBy.uid}/Client-Provided/${req.files[i].filename}`;
+        await adminSDK
+          .storage()
+          .bucket()
+          .upload(req.files[i].path, {
+            destination,
+          })
+          .catch((err) => {
+            // Evaluate error
+            console.log(
+              "There was an error while uploading documents to the google cloud storage bucket. See Error:\n",
+              err
+            );
+            res.status(500).send();
           });
 
-        // All is great
-        res.status(200).send();
-      })();
-    });
+        // Delete files off local server
+        fs.unlink(`./data/uploads/${req.files[i].filename}`, (err) => {
+          if (err) {
+            console.log(
+              "There was an error while deleting files off the local server.\n",
+              err
+            );
+          }
+        });
+      }
+      res.status(200).send();
+    }
+  );
 };

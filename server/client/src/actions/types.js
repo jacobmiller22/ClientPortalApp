@@ -2,6 +2,7 @@
 export const FETCH_USERS = "fetch_users";
 export const CREATE_USER = "create_user";
 export const DELETE_USER = "delete_user";
+export const UPDATE_USER = "update_user";
 export const MODIFY_USER_PERMISSIONS = "modify_user_permissions";
 
 // Auth
