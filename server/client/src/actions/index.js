@@ -128,6 +128,8 @@ export const createUser = (credentials) => async (dispatch) => {
   });
 };
 
+export const deleteUser = (uid) => async (dispatch) => {};
+
 export const __changeAuthState__ = () => async (dispatch) => {
   await authRef.onAuthStateChanged((user) => {
     dispatch({
