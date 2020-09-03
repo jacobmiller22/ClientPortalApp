@@ -1,7 +1,16 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 
-import { List, ListItem, Typography, Button } from "@material-ui/core";
+import {
+  List,
+  ListItem,
+  Typography,
+  Button,
+  Select,
+  InputLabel,
+  MenuItem,
+  FormControl,
+} from "@material-ui/core";
 import "../styling/Center.css";
 
 import DocumentDetail from "./DocumentDetail";
@@ -9,78 +18,102 @@ import LoadMessage from "../Loading/LoadMessage";
 
 import { fetchDocuments } from "../../actions";
 
-class DocumentList extends React.Component {
-  state = { page: 1 };
+const DocumentList = (props) => {
+  const [page, setPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [numItems, setNumItems] = useState(0);
 
-  componentDidMount() {
-    this.props.fetchDocuments({ n: 5 });
-  }
+  useEffect(() => {
+    props.fetchDocuments({ n: itemsPerPage });
+  }, [itemsPerPage]);
 
-  onNextPageClick = () => {
-    console.log(this.state);
-    this.props.fetchDocuments({
-      n: 5,
-      nextPageToken: this.props.documents.nextPageToken,
+  const onNextPageClick = () => {
+    props.fetchDocuments({
+      n: itemsPerPage,
+      nextPageToken: props.documents.nextPageToken,
     });
-    const newPage = this.state.page + 1;
-    this.setState({ page: newPage });
+    setPage(page + 1);
   };
 
-  onPreviousPageClick = () => {
-    this.props.fetchDocuments({
-      n: 5,
-      currPageNum: this.state.page,
+  const onPreviousPageClick = () => {
+    props.fetchDocuments({
+      n: itemsPerPage,
+      currPageNum: page,
     });
-    const newPage = this.state.page - 1;
-    this.setState({ page: newPage });
+    setPage(page - 1);
   };
 
-  renderPages = () => {
-    if (this.props.documents.nextPageToken) {
+  const renderPages = () => {
+    if (props.documents.nextPageToken) {
       var isNextDisabled = false;
     } else {
-      var isNextDisabled = true;
+      isNextDisabled = true;
     }
 
     const renderPageButtons = () => {
-      return this.state.pages.map((page) => {
-        return (
-          <Button variant='contained' color='primary'>
-            {page}
+      const pageNumberDisplay = `Page ${page}`;
+      return (
+        <>
+          <Button variant='outlined' color='primary'>
+            {pageNumberDisplay}
           </Button>
-        );
-      });
+        </>
+      );
     };
+
+    if (!props.documents.items) {
+      return;
+    }
+    const numResultsDisplay = `${props.documents.items.length} results`;
 
     return (
       <>
+        <Typography>{numResultsDisplay}</Typography>
         <Button
           variant='contained'
           color='primary'
-          disabled={this.state.page === 1}
-          onClick={this.onPreviousPageClick}>
-          Previous
+          disabled={page === 1}
+          onClick={onPreviousPageClick}>
+          Prev
         </Button>
-        <Typography variant='h5' display='inline' color='primary'>
-          {this.state.page}
-        </Typography>
+        {renderPageButtons()}
         <Button
           variant='contained'
           color='primary'
           disabled={isNextDisabled}
-          onClick={this.onNextPageClick}>
+          onClick={onNextPageClick}>
           Next
         </Button>
       </>
     );
   };
 
-  renderList = () => {
-    if (!this.props.documents) {
+  const renderResultsPerPage = () => {
+    const handleChange = (e) => {
+      setItemsPerPage(e.target.value);
+    };
+
+    return (
+      <FormControl variant='outlined' style={{ minWidth: 120 }}>
+        <InputLabel>Results per page</InputLabel>
+        <Select
+          onChange={handleChange}
+          value={itemsPerPage}
+          label='Results per page'>
+          <MenuItem value={10}>10</MenuItem>
+          <MenuItem value={25}>25</MenuItem>
+          <MenuItem value={50}>50</MenuItem>
+        </Select>
+      </FormControl>
+    );
+  };
+
+  const renderList = () => {
+    if (!props.documents) {
       return <div>No documents</div>;
     }
-    const { items } = this.props.documents;
-    console.log(this.props.documents);
+    const { items } = props.documents;
+
     if (!items) {
       return (
         <div>
@@ -98,18 +131,17 @@ class DocumentList extends React.Component {
     });
   };
 
-  render() {
-    return (
-      <div className='centered'>
-        <List>
-          <Typography variant='h5'>Files on record</Typography>
-          {this.renderPages()}
-          {this.renderList()}
-        </List>
-      </div>
-    );
-  }
-}
+  return (
+    <div className='centered'>
+      <List>
+        <Typography variant='h5'>{props.title}</Typography>
+        {renderPages()}
+        {renderList()}
+        {renderResultsPerPage()}
+      </List>
+    </div>
+  );
+};
 const mapStateToProps = (state) => {
   return {
     documents: state.documents,

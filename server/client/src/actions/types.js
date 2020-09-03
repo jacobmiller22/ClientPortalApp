@@ -13,3 +13,9 @@ export const USER_PERMISSIONS = "user_permissions";
 // Documents
 export const UPLOAD_DOCUMENTS = "upload_documents";
 export const FETCH_DOCUMENTS = "fetch_documents";
+
+// Errors
+export const SIGN_IN_ERROR = "sign_in_error";
+export const SIGN_UP_ERROR = "sign_up_error";
+export const SIGN_OUT_ERROR = "sign_out_error";
+export const TOKEN_RESULT_ERROR = "token_result_error";

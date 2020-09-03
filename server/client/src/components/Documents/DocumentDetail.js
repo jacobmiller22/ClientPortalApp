@@ -43,7 +43,7 @@ class DocumentDetail extends React.Component {
       return null;
     }
     return (
-      <Button onClick={this.onViewClick} color="primary">
+      <Button onClick={this.onViewClick} color='primary' variant='outlined'>
         View
       </Button>
     );
@@ -53,10 +53,10 @@ class DocumentDetail extends React.Component {
     const { meta } = this.state;
     return (
       <div key={meta.fullPath}>
-        <Typography display="inline">
+        <Typography display='inline'>
           <strong>Name: </strong> {meta.name}
         </Typography>
-        <Typography display="inline">
+        <Typography display='inline'>
           <strong>Size: </strong> {formatBytesWhole(meta.size)}
         </Typography>
 
@@ -69,7 +69,7 @@ class DocumentDetail extends React.Component {
     if (this.state.meta) {
       return <div>{this.renderDetail()}</div>;
     }
-    return <LoadMessage color="primary" message="Loading File" />;
+    return <LoadMessage color='primary' message='Loading File' />;
   }
 }
 

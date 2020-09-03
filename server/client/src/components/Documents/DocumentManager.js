@@ -22,9 +22,15 @@ class DocumentManager extends React.Component {
   renderOptions() {
     return (
       <Toolbar style={{ backgroundColor: "#f6f7f7" }}>
-        <Button color="primary">Contact Us!</Button>
-        <Button color="primary">Contact Us!</Button>
-        <Button color="primary">Contact Us!</Button>
+        <Button color='primary' variant='outlined'>
+          Contact Us!
+        </Button>
+        <Button color='primary' variant='outlined'>
+          Contact Us!
+        </Button>
+        <Button color='primary' variant='outlined'>
+          Contact Us!
+        </Button>
       </Toolbar>
     );
   }
@@ -32,13 +38,13 @@ class DocumentManager extends React.Component {
   renderFileList() {
     if (!this.props.currentUser) {
       return (
-        <div className="centered">
-          <LoadMessage color="primary" message="Signing in..." />
+        <div className='centered'>
+          <LoadMessage color='primary' message='Signing in...' />
         </div>
       );
     }
 
-    return <DocumentList />;
+    return <DocumentList title='Uploaded by me' />;
   }
 
   render() {

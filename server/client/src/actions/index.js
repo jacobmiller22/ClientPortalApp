@@ -4,6 +4,7 @@ import * as types from "./types";
 import { reset } from "redux-form";
 
 import { authRef, storageRef } from "../firebase";
+import SignIn from "../components/Forms/Authentication/SignIn";
 
 const verifyAuthorization = async (resultOnly) => {
   const { currentUser } = authRef;
@@ -173,8 +174,8 @@ export const deleteUser = (uid) => async (dispatch) => {};
 
 export const updateUser = (uid, credentials) => async (dispatch) => {};
 
-export const __changeAuthState__ = () => async (dispatch) => {
-  await authRef.onAuthStateChanged((user) => {
+export const registerAuthListener = () => async (dispatch) => {
+  authRef.onAuthStateChanged(async (user) => {
     dispatch({
       type: types.USER_STATUS,
       payload: user || null,
@@ -184,22 +185,33 @@ export const __changeAuthState__ = () => async (dispatch) => {
       return;
     }
     // Check User's permissions
-    user.getIdTokenResult().then(async (result) => {
-      if (result.claims) {
-        // User has a custom claim
-        dispatch({
-          type: types.USER_PERMISSIONS,
-          payload: result.claims,
-        });
-      }
+    const result = await user.getIdTokenResult().catch((error) => {
+      console.log(error);
+      dispatch({
+        type: types.TOKEN_RESULT_ERROR,
+        payload: error,
+      });
     });
+    if (result.claims) {
+      // User has a custom claim
+      dispatch({
+        type: types.USER_PERMISSIONS,
+        payload: result.claims,
+      });
+    }
   });
 };
 
-export const signUserIn = (email, password) => () => {
-  authRef.signInWithEmailAndPassword(email, password);
+export const signUserIn = (email, password) => (dispatch) => {
+  authRef.signInWithEmailAndPassword(email, password).catch((error) => {
+    console.log(error);
+    dispatch({ type: types.SIGN_IN_ERROR, payload: error });
+  });
 };
 
-export const signUserOut = () => () => {
-  authRef.signOut();
+export const signUserOut = () => (dispatch) => {
+  authRef.signOut().catch((error) => {
+    console.log(error);
+    dispatch({ type: types.SIGN_OUT_ERROR, payload: error });
+  });
 };

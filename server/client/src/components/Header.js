@@ -30,14 +30,14 @@ function Header(props) {
   const renderAuth = () => {
     if (props.currentUser) {
       return (
-        <Button color="inherit" onClick={() => props.signUserOut()}>
+        <Button color='inherit' onClick={() => props.signUserOut()}>
           logout
         </Button>
       );
     } else {
       return (
         // Later user Modal
-        <Button color="inherit" component={Link} to="/auth">
+        <Button color='inherit' component={Link} to='/auth'>
           Login
         </Button>
       );
@@ -47,24 +47,24 @@ function Header(props) {
   const renderToolbar = () => {
     return (
       <Toolbar>
-        <Button color="inherit" component={Link} to="/">
+        <Button color='inherit' component={Link} to='/'>
           <img
             className={classes.logo}
-            alt="Stafford Tax Logo"
-            src="http://staffordtaxadvisors.com/wp-content/uploads/2016/07/Logo-STBA-small-e1467831377961.png"
+            alt='Stafford Tax Logo'
+            src='http://staffordtaxadvisors.com/wp-content/uploads/2016/07/Logo-STBA-small-e1467831377961.png'
           />
         </Button>
 
-        <Button color="inherit" component={Link} to="/upload">
+        <Button color='inherit' component={Link} to='/documents/upload'>
           Uploader
         </Button>
-        <Button color="inherit" component={Link} to="/history">
+        <Button color='inherit' component={Link} to='/documents'>
           History
         </Button>
-        <Button color="inherit" component={Link} to="manage_users">
+        <Button color='inherit' component={Link} to='users'>
           Manage Users
         </Button>
-        <Typography align="right" className={classes.rightSideItems}>
+        <Typography align='right' className={classes.rightSideItems}>
           {renderAuth()}
         </Typography>
       </Toolbar>
@@ -72,7 +72,7 @@ function Header(props) {
   };
 
   return (
-    <AppBar className={classes.appBar} position="static">
+    <AppBar className={classes.appBar} position='static'>
       {renderToolbar()}
     </AppBar>
   );

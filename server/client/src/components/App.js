@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { BrowserRouter, Route } from "react-router-dom";
 import { connect } from "react-redux";
-import { __changeAuthState__ } from "../actions";
+import { registerAuthListener } from "../actions";
 
 import "../components/styling/App.css";
 import { ThemeProvider } from "@material-ui/core/styles";
@@ -17,7 +17,7 @@ import Footer from "./Footer";
 
 class App extends Component {
   componentDidMount() {
-    this.props.__changeAuthState__();
+    this.props.registerAuthListener();
   }
 
   render() {
@@ -25,11 +25,11 @@ class App extends Component {
       <BrowserRouter>
         <ThemeProvider theme={theme}>
           <Header />
-          <Route exact path="/" component={Landing} />
-          <Route exact path="/upload" component={Uploader} />
-          <Route exact path="/history" component={DocumentManager} />
-          <Route exact path="/auth" component={SignIn} />
-          <Route exact path="/manage_users" component={UserManager} />
+          <Route exact path='/' component={Landing} />
+          <Route exact path='/documents/upload' component={Uploader} />
+          <Route exact path='/documents' component={DocumentManager} />
+          <Route exact path='/auth' component={SignIn} />
+          <Route exact path='/users' component={UserManager} />
           <Footer />
         </ThemeProvider>
       </BrowserRouter>
@@ -37,4 +37,4 @@ class App extends Component {
   }
 }
 
-export default connect(null, { __changeAuthState__ })(App);
+export default connect(null, { registerAuthListener })(App);
