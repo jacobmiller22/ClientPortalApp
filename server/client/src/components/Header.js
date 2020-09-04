@@ -18,10 +18,6 @@ const useStyles = makeStyles(() => ({
   root: {
     flexGrow: 1,
   },
-
-  rightSideItems: {
-    flexGrow: 1,
-  },
 }));
 
 function Header(props) {
@@ -56,15 +52,15 @@ function Header(props) {
         </Button>
 
         <Button color='inherit' component={Link} to='/documents/upload'>
-          Uploader
+          Upload
         </Button>
         <Button color='inherit' component={Link} to='/documents'>
-          History
+          My Documents
         </Button>
-        <Button color='inherit' component={Link} to='users'>
+        <Button color='inherit' component={Link} to='/users'>
           Manage Users
         </Button>
-        <Typography align='right' className={classes.rightSideItems}>
+        <Typography align='right' style={{ flexGrow: 1 }}>
           {renderAuth()}
         </Typography>
       </Toolbar>

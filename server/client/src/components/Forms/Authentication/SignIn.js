@@ -6,7 +6,7 @@ import { Button, TextField } from "@material-ui/core";
 
 import { signUserIn, signUserOut } from "../../../actions";
 
-const LoginPage = (props) => {
+const SignIn = (props) => {
   const onSubmit = (values) => {
     const { email, password } = values;
     console.log(values);
@@ -17,8 +17,8 @@ const LoginPage = (props) => {
     if (props.auth) {
       return (
         <Button
-          color="primary"
-          variant="contained"
+          color='primary'
+          variant='contained'
           onClick={() => props.signUserOut()}>
           logout
         </Button>
@@ -26,17 +26,17 @@ const LoginPage = (props) => {
     }
     return (
       <form onSubmit={props.handleSubmit((values) => onSubmit(values))}>
-        <Field name="email" type="text" component="input" placeholder="Email" />
+        <Field name='email' type='text' component='input' placeholder='Email' />
         <Field
-          name="password"
-          type="password"
-          component="input"
-          placeholder="Password"
+          name='password'
+          type='password'
+          component='input'
+          placeholder='Password'
         />
         <Button
-          type="submit"
-          variant="contained"
-          color="primary"
+          type='submit'
+          variant='contained'
+          color='primary'
           style={{ margin: 5 }}>
           Login
         </Button>
@@ -53,7 +53,7 @@ const mapStateToProps = (state) => {
 
 const wrappedForm = reduxForm({
   form: "loginForm",
-})(LoginPage);
+})(SignIn);
 
 export default connect(mapStateToProps, { signUserIn, signUserOut })(
   wrappedForm

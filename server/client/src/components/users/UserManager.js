@@ -1,7 +1,13 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import { Typography, Toolbar, Button, DialogTitle } from "@material-ui/core";
+import {
+  Typography,
+  Toolbar,
+  Button,
+  DialogTitle,
+  Container,
+} from "@material-ui/core";
 
 import UserList from "./UserList";
 import LoadMessage from "../Loading/LoadMessage";
@@ -26,7 +32,7 @@ class UserManager extends React.Component {
   renderOptions() {
     return (
       <Toolbar style={{ backgroundColor: "#f6f7f7" }}>
-        <Button color="primary" onClick={this.handleClickNewUser}>
+        <Button color='primary' onClick={this.handleClickNewUser}>
           Create new User
         </Button>
       </Toolbar>
@@ -37,12 +43,12 @@ class UserManager extends React.Component {
     const { currentUser, permissions } = this.props.auth;
 
     if (!currentUser) {
-      return <LoadMessage message="Please sign in" color="primary" />;
+      return <LoadMessage message='Please sign in' color='primary' />;
     }
     if (!permissions.administrator) {
       // User is not authorized to view user list
       return (
-        <Typography color="error">
+        <Typography color='error'>
           You are not authorized to view this page!
         </Typography>
       );
@@ -58,10 +64,10 @@ class UserManager extends React.Component {
           open={this.state.openNewUserForm}
           onClose={this.handleDialogClose}>
           <DialogTitle>Create a User!</DialogTitle>
-          <SignUp header=" " admin />
+          <SignUp header=' ' admin />
         </CustomDialog>
         {this.renderOptions()}
-        {this.renderUserList()}
+        <Container maxWidth='sm'>{this.renderUserList()}</Container>
       </div>
     );
   }

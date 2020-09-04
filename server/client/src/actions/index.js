@@ -4,7 +4,6 @@ import * as types from "./types";
 import { reset } from "redux-form";
 
 import { authRef, storageRef } from "../firebase";
-import SignIn from "../components/Forms/Authentication/SignIn";
 
 const verifyAuthorization = async (resultOnly) => {
   const { currentUser } = authRef;
@@ -20,7 +19,7 @@ const verifyAuthorization = async (resultOnly) => {
     if (claims && claims.administrator) {
       return result;
     }
-    throw "Unauthorized user";
+    throw Error("Unauthorized user");
   } catch (error) {
     console.log(error);
   }
@@ -30,8 +29,6 @@ export const uploadFormData = (formData) => async (dispatch) => {
   const { currentUser } = authRef;
 
   if (!currentUser) return;
-
-  currentUser.getIdToken(false).then(async (idToken) => {});
 
   const { token } = await verifyAuthorization(true);
 
@@ -81,16 +78,17 @@ export const fetchDocuments = ({ n, nextPageToken, currPageNum }) => async (
   } else if (currPageNum > 0) {
     // List all items before previous page
     const numResults = n * (currPageNum - 2);
+
     if (numResults > 0) {
       const preItems = await listRef.list({ maxResults: numResults });
-      console.log("pre page:", preItems);
+
       // Now get the next page, which will be the "previous page"
-      var thisPage = await listNextPage(preItems.nextPageToken);
+      thisPage = await listNextPage(preItems.nextPageToken);
     } else {
-      var thisPage = await listRef.list({ maxResults: n });
+      thisPage = await listRef.list({ maxResults: n });
     }
   } else {
-    var thisPage = await listRef.list({ maxResults: n });
+    thisPage = await listRef.list({ maxResults: n });
   }
 
   dispatch({
@@ -153,20 +151,16 @@ export const createUser = (credentials) => async (dispatch) => {
     return;
   }
 
-  currentUser.getIdTokenResult().then(async (result) => {
-    if (!verifyAuthorization(result.claims)) return;
+  const result = await verifyAuthorization();
 
-    console.log(result);
-    const res = await axios.post("/api/users", credentials, {
-      headers: {
-        idToken: result.token,
-      },
-    });
-
-    dispatch({
-      type: types.CREATE_USER,
-      payload: res.data,
-    });
+  const res = await axios.post("/api/users", credentials, {
+    headers: {
+      idToken: result.token,
+    },
+  });
+  dispatch({
+    type: types.CREATE_USER,
+    payload: res.data,
   });
 };
 
@@ -202,8 +196,8 @@ export const registerAuthListener = () => async (dispatch) => {
   });
 };
 
-export const signUserIn = (email, password) => (dispatch) => {
-  authRef.signInWithEmailAndPassword(email, password).catch((error) => {
+export const signUserIn = (email, password) => async (dispatch) => {
+  await authRef.signInWithEmailAndPassword(email, password).catch((error) => {
     console.log(error);
     dispatch({ type: types.SIGN_IN_ERROR, payload: error });
   });
