@@ -1,11 +1,19 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 
-import { Typography, List, ListItem, GridList } from "@material-ui/core";
+import {
+  Typography,
+  List,
+  ListItem,
+  ListSubheader,
+  InputBase,
+  FormGroup,
+} from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
 import UserDetail from "./UserDetail";
 import LoadMessage from "../Loading/LoadMessage";
+import LabeledCheckbox from "../Forms/LabeledCheckbox";
 
 import { fetchUsers } from "../../actions";
 
@@ -21,10 +29,21 @@ const useStyles = makeStyles((theme) => ({
     height: 450,
     // Promote the list into his own layer on Chrome. This cost memory but helps keeping high FPS.
   },
+  list: {
+    width: "100%",
+  },
+  paper: {
+    backgroundColor: theme.palette.background.paper,
+    width: 1900,
+    height: "auto",
+    overflow: "auto",
+  },
 }));
 
 const UserList = (props) => {
   const classes = useStyles();
+
+  const [dense, setDense] = useState(false);
 
   useEffect(() => {
     props.fetchUsers(100);
@@ -39,19 +58,29 @@ const UserList = (props) => {
 
     return users.map((user) => {
       return (
-        <ListItem autoFocus button key={user.email}>
+        <ListItem dense={dense} divider key={user.email}>
           <UserDetail user={user} />
         </ListItem>
       );
     });
   };
 
+  const renderSearchBar = () => {};
+
   return (
     <div className={classes.root}>
-      <GridList className={classes.gridList}>
-        <Typography variant='h5'>Users on record</Typography>
+      <List className={classes.list}>
+        <FormGroup row>
+          <ListSubheader>Users on record</ListSubheader>
+          <LabeledCheckbox
+            label='Dense'
+            checked={dense}
+            handleChange={() => setDense(!dense)}
+          />
+        </FormGroup>
+
         {renderUserList()}
-      </GridList>
+      </List>
     </div>
   );
 };

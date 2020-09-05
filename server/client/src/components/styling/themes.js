@@ -5,6 +5,7 @@ export const theme = createMuiTheme({
     primary: {
       main: "#C32F27",
       dark: "#95190C",
+      contrastText: "#fff",
     },
     secondary: {
       main: "#555555",
@@ -29,6 +30,14 @@ export const theme = createMuiTheme({
       light: "#81c784",
       dark: "#388e3c",
     },
+    text: {
+      primary: "#212121",
+      secondary: "#757575",
+    },
+    background: {
+      paper: "#fff",
+      default: "#fafafa",
+    },
   },
   typography: {
     fontFamily: [
@@ -44,4 +53,5 @@ export const theme = createMuiTheme({
       '"Segoe UI Symbol"',
     ].join(","),
   },
+  paper: {},
 });

@@ -48,10 +48,10 @@ const Uploader = (props) => {
   const renderInstructions = () => {
     return (
       <div>
-        <Typography variant="h3" color="secondary">
+        <Typography variant='h3' color='secondary'>
           Portal Uploader!
         </Typography>
-        <Typography variant="h5" color="secondary">
+        <Typography variant='h5' color='secondary'>
           Upload content to your provider here
         </Typography>
 
@@ -71,9 +71,9 @@ const Uploader = (props) => {
   };
 
   return (
-    <div className="wrapper">
+    <div className='wrapper'>
       {renderInstructions()}
-      <div className="content">
+      <div className='content'>
         <FileUploadForm onSubmit={onFormSubmit} multiple />
         {renderSelectedFiles()}
       </div>

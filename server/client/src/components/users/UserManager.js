@@ -67,7 +67,7 @@ class UserManager extends React.Component {
           <SignUp header=' ' admin />
         </CustomDialog>
         {this.renderOptions()}
-        <Container maxWidth='sm'>{this.renderUserList()}</Container>
+        <Container minWidth='100vh'>{this.renderUserList()}</Container>
       </div>
     );
   }

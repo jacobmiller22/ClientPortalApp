@@ -1,7 +1,15 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 
-import { Typography, IconButton, Button, DialogTitle } from "@material-ui/core";
+import {
+  Typography,
+  IconButton,
+  Button,
+  DialogTitle,
+  ListItemText,
+  ListItemSecondaryAction,
+  ListItemIcon,
+} from "@material-ui/core";
 import SupervisorAccountSharpIcon from "@material-ui/icons/SupervisorAccountSharp";
 import VerifiedUserIcon from "@material-ui/icons/VerifiedUser";
 import EditIcon from "@material-ui/icons/Edit";
@@ -10,95 +18,87 @@ import CustomDialog from "../CustomDialog";
 
 import { deleteUser } from "../../actions";
 
-class UserDetail extends React.Component {
-  state = {
-    open: false,
-    deleteDialogOpen: false,
-    user: {
-      email: "",
-    },
-  };
+const UserDetail = (props) => {
+  const [editOpen, setEditOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [debouncedUser, setDebouncedUser] = useState({ email: "" });
 
-  componentDidMount() {
-    const { user } = this.props;
-    this.setState({
-      user: {
-        email: user.email,
-      },
+  const { user } = props;
+
+  useEffect(() => {
+    setDebouncedUser({
+      email: user.email,
     });
-  }
+  }, []);
 
-  onDeleteUserClick = () => {
+  const handleDelete = () => {
     console.log("deleting user");
     // delete User
   };
 
-  renderDeleteUser = () => {
+  const renderDeleteUser = () => {
     return (
       <div>
         <Typography>Are you sure you want to delete this user?</Typography>
-        <Button
-          variant='contained'
-          color='primary'
-          onClick={this.onDeleteUserClick}>
+        <Button variant='contained' color='primary' onClick={handleDelete}>
           Delete
         </Button>
       </div>
     );
   };
 
-  handleDialogOpen = () => this.setState({ open: true });
+  const handleDialogOpen = () => this.setState({ open: true });
 
-  handleDialogClose = () =>
-    this.setState({ open: false, deleteDialogOpen: false });
+  const handleDialogClose = () => {
+    setDeleteOpen(false);
+    setEditOpen(false);
+  };
 
-  renderDialogContent = () => {
-    const { user } = this.state;
-
+  const renderDialogContent = () => {
     return (
       <>
         <DialogTitle id='simple-dialog-title'>Modify User Info</DialogTitle>
         <Button>Edit Information</Button>
-        <Typography>Email: {user.email}</Typography>
+        <Typography>Email: {debouncedUser.email}</Typography>
         <form>
-          <input value={this.state.email} type='text' />
+          <input value={debouncedUser.email} type='text' />
         </form>
         <Button
           color='primary'
           variant='contained'
-          onClick={() =>
-            this.setState({ ...this.state, deleteDialogOpen: true })
-          }>
+          onClick={() => setDeleteOpen(true)}>
           Delete User
         </Button>
       </>
     );
   };
 
-  renderAdminIcon() {
-    const { user } = this.props;
+  const renderAdminIcon = () => {
     if (user.customClaims && user.customClaims.administrator) {
-      return <SupervisorAccountSharpIcon color='primary' />;
+      return (
+        <ListItemIcon>
+          <SupervisorAccountSharpIcon color='primary' />
+        </ListItemIcon>
+      );
     }
-  }
+  };
 
-  renderAdminActions() {
-    const { user } = this.props;
-
+  const renderAdminActions = () => {
     // Prevents current user from changing their own information in the manage users tab
-    if (user.uid === this.props.currentUser.uid) {
+    if (user.uid === props.currentUser.uid) {
       return null;
     }
     return (
-      <IconButton onClick={this.handleDialogOpen}>
-        <EditIcon color='primary' />
-      </IconButton>
+      <>
+        <IconButton onClick={handleDialogOpen}>
+          <EditIcon color='primary' />
+        </IconButton>
+        {renderVerified()}
+      </>
     );
-  }
+  };
 
-  renderVerified() {
-    const { user } = this.props;
-
+  const renderVerified = () => {
     if (user.emailVerified) {
       return <VerifiedUserIcon />;
     }
@@ -107,30 +107,38 @@ class UserDetail extends React.Component {
         Verify Email
       </Button>
     );
-  }
+  };
 
-  render() {
-    const { user } = this.props;
-
+  const renderDialogs = () => {
     return (
       <>
-        <CustomDialog open={this.state.open} onClose={this.handleDialogClose}>
-          {this.renderDialogContent()}
+        <CustomDialog open={editOpen} onClose={handleDialogClose}>
+          {renderDialogContent()}
         </CustomDialog>
-        <CustomDialog
-          open={this.state.deleteDialogOpen}
-          onClose={this.handleDialogClose}>
-          {this.renderDeleteUser()}
+        <CustomDialog open={deleteOpen} onClose={handleDialogClose}>
+          {renderDeleteUser()}
         </CustomDialog>
-
-        {this.renderAdminIcon()}
-        <Typography display='inline'>{user.email}</Typography>
-        {this.renderAdminActions()}
-        {this.renderVerified()}
       </>
     );
-  }
-}
+  };
+
+  const isInset = !(user.customClaims && user.customClaims.administrator);
+
+  return (
+    <>
+      {renderDialogs()}
+      {renderAdminIcon()}
+
+      <ListItemText disableTypography inset={isInset}>
+        <Typography>{user.email}</Typography>
+        <Typography noWrap={false} variant='caption'>
+          Company Name
+        </Typography>
+      </ListItemText>
+      <ListItemSecondaryAction>{renderAdminActions()}</ListItemSecondaryAction>
+    </>
+  );
+};
 
 const mapStateToProps = (state) => {
   return { currentUser: state.auth.currentUser };
