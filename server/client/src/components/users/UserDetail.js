@@ -9,6 +9,9 @@ import {
   ListItemText,
   ListItemSecondaryAction,
   ListItemIcon,
+  DialogContentText,
+  DialogContent,
+  DialogActions,
 } from "@material-ui/core";
 import SupervisorAccountSharpIcon from "@material-ui/icons/SupervisorAccountSharp";
 import VerifiedUserIcon from "@material-ui/icons/VerifiedUser";
@@ -17,60 +20,49 @@ import EditIcon from "@material-ui/icons/Edit";
 import CustomDialog from "../CustomDialog";
 
 import { deleteUser } from "../../actions";
+import UserEdit from "./UserEdit";
 
 const UserDetail = (props) => {
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const [debouncedUser, setDebouncedUser] = useState({ email: "" });
 
   const { user } = props;
 
-  useEffect(() => {
-    setDebouncedUser({
-      email: user.email,
-    });
-  }, []);
-
   const handleDelete = () => {
-    console.log("deleting user");
+    console.log("deleting user", user);
+    setDeleteOpen(false);
     // delete User
+    props.deleteUser(user.uid);
   };
 
   const renderDeleteUser = () => {
     return (
-      <div>
-        <Typography>Are you sure you want to delete this user?</Typography>
-        <Button variant='contained' color='primary' onClick={handleDelete}>
-          Delete
-        </Button>
-      </div>
+      <>
+        <DialogTitle>{"Delete User?"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to delete this user? This user's information
+            will not be recoverable.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant='outlined'
+            color='secondary'
+            onClick={() => setDeleteOpen(false)}>
+            Cancel
+          </Button>
+          <Button variant='contained' color='primary' onClick={handleDelete}>
+            Delete
+          </Button>
+        </DialogActions>
+      </>
     );
   };
-
-  const handleDialogOpen = () => this.setState({ open: true });
 
   const handleDialogClose = () => {
     setDeleteOpen(false);
     setEditOpen(false);
-  };
-
-  const renderDialogContent = () => {
-    return (
-      <>
-        <DialogTitle id='simple-dialog-title'>Modify User Info</DialogTitle>
-        <Button>Edit Information</Button>
-        <Typography>Email: {debouncedUser.email}</Typography>
-        <form>
-          <input value={debouncedUser.email} type='text' />
-        </form>
-        <Button
-          color='primary'
-          variant='contained'
-          onClick={() => setDeleteOpen(true)}>
-          Delete User
-        </Button>
-      </>
-    );
   };
 
   const renderAdminIcon = () => {
@@ -90,7 +82,7 @@ const UserDetail = (props) => {
     }
     return (
       <>
-        <IconButton onClick={handleDialogOpen}>
+        <IconButton onClick={() => setEditOpen(true)}>
           <EditIcon color='primary' />
         </IconButton>
         {renderVerified()}
@@ -109,11 +101,13 @@ const UserDetail = (props) => {
     );
   };
 
+  const handleDeleteOpen = () => setDeleteOpen(true);
+
   const renderDialogs = () => {
     return (
       <>
         <CustomDialog open={editOpen} onClose={handleDialogClose}>
-          {renderDialogContent()}
+          <UserEdit user={user} handleClick={handleDeleteOpen} />
         </CustomDialog>
         <CustomDialog open={deleteOpen} onClose={handleDialogClose}>
           {renderDeleteUser()}

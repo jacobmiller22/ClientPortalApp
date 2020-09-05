@@ -24,19 +24,8 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "space-around",
     overflow: "hidden",
   },
-  gridList: {
-    width: 500,
-    height: 450,
-    // Promote the list into his own layer on Chrome. This cost memory but helps keeping high FPS.
-  },
   list: {
     width: "100%",
-  },
-  paper: {
-    backgroundColor: theme.palette.background.paper,
-    width: 1900,
-    height: "auto",
-    overflow: "auto",
   },
 }));
 

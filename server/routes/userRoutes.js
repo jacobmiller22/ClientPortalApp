@@ -46,7 +46,7 @@ module.exports = (app) => {
     // update user settings
 
     const uid = req.body.uid;
-
+    const admin = require("../services/firebaseAdmin").createFireBaseAdmin();
     admin
       .auth()
       .getUser(uid)
@@ -83,8 +83,11 @@ module.exports = (app) => {
       });
   });
 
-  app.delete("/api.users", requireAdmin, async (req, res) => {
+  app.delete("/api/users", requireAdmin, async (req, res) => {
+    const admin = require("../services/firebaseAdmin").createFireBaseAdmin();
+
     const uid = req.body.uid;
+    console.log("Deleting user: ", req.body);
 
     admin
       .auth()

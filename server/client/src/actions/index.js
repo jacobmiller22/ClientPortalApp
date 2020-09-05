@@ -164,7 +164,26 @@ export const createUser = (credentials) => async (dispatch) => {
   });
 };
 
-export const deleteUser = (uid) => async (dispatch) => {};
+export const deleteUser = (uid) => async (dispatch) => {
+  const { currentUser } = authRef;
+
+  if (!currentUser) return;
+
+  const result = await verifyAuthorization();
+
+  const res = await axios.delete("/api/users", {
+    headers: {
+      idtoken: result.token,
+    },
+    data: {
+      uid,
+    },
+  });
+  dispatch({
+    type: types.DELETE_USER,
+    payload: res.data,
+  });
+};
 
 export const updateUser = (uid, credentials) => async (dispatch) => {};
 

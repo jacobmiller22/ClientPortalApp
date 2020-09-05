@@ -1,9 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 
 import { makeStyles } from "@material-ui/core/styles";
-import { AppBar, Toolbar, Typography, Button } from "@material-ui/core";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Button,
+  MenuItem,
+  Menu,
+} from "@material-ui/core";
+
+import UserMenu from "./UserMenu";
 
 import { signUserIn, signUserOut } from "../actions";
 
@@ -23,16 +32,13 @@ const useStyles = makeStyles(() => ({
 function Header(props) {
   const classes = useStyles();
 
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+
   const renderAuth = () => {
     if (props.currentUser) {
-      return (
-        <Button color='inherit' onClick={() => props.signUserOut()}>
-          logout
-        </Button>
-      );
+      return <UserMenu />;
     } else {
       return (
-        // Later user Modal
         <Button color='inherit' component={Link} to='/auth'>
           Login
         </Button>
