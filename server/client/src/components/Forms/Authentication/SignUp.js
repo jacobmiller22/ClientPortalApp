@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { reduxForm, Field } from "redux-form";
 
-import { Button, Typography, TextField } from "@material-ui/core";
+import { Button, Typography } from "@material-ui/core";
 
 import { createUser } from "../../../actions";
 
@@ -22,29 +22,25 @@ class SignUp extends React.Component {
     }
   }
 
-  // () => (
-  //   <TextField id="filled-basic" variant="filled" label="Email" />
-  // )
-
   renderForm() {
     return (
       <form
         onSubmit={this.props.handleSubmit((values) => this.onSubmit(values))}>
         <Typography>Email</Typography>
         <Field
-          name="email"
-          type="text"
-          component="input"
-          placeholder="Email"></Field>
+          name='email'
+          type='text'
+          component='input'
+          placeholder='Email'></Field>
 
         <br />
 
         <Typography>Password</Typography>
         <Field
-          name="password"
-          type="password"
-          component="input"
-          placeholder="Password"
+          name='password'
+          type='password'
+          component='input'
+          placeholder='Password'
         />
 
         <br />
@@ -52,9 +48,9 @@ class SignUp extends React.Component {
         {this.renderAdmin()}
 
         <Button
-          type="submit"
-          variant="contained"
-          color="primary"
+          type='submit'
+          variant='contained'
+          color='primary'
           style={{ margin: 5 }}>
           Create
         </Button>

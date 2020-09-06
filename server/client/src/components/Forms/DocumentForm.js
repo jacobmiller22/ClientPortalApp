@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { PDFViewer } from "@react-pdf/renderer";
+
 import { Button } from "@material-ui/core";
 
 import DocumentPreview from "../Documents/DocumentPreview";
@@ -30,6 +30,7 @@ const DocumentForm = (props) => {
           type='file'
           name='file'
           onChange={onFileSelect}
+          accept={props.fileTypes}
           style={{ display: "none" }}
           multiple={props.multiple}
           encType='multipart/form-data'

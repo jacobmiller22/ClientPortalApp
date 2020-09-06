@@ -1,14 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 
-import {
-  Typography,
-  List,
-  ListItem,
-  ListSubheader,
-  InputBase,
-  FormGroup,
-} from "@material-ui/core";
+import { List, ListItem, ListSubheader, FormGroup } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
 import UserDetail from "./UserDetail";
@@ -36,6 +29,7 @@ const UserList = (props) => {
 
   useEffect(() => {
     props.fetchUsers(100);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const renderUserList = () => {
@@ -54,7 +48,7 @@ const UserList = (props) => {
     });
   };
 
-  const renderSearchBar = () => {};
+  // const renderSearchBar = () => {};
 
   return (
     <div className={classes.root}>

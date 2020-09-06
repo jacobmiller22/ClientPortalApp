@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
 
-import { Toolbar, Button, Tabs, Tab } from "@material-ui/core";
+import { Toolbar, Tabs, Tab } from "@material-ui/core";
 
 import "../styling/Center.css";
 
@@ -17,9 +17,9 @@ const DocumentManager = (props) => {
    *  - User Selector
    *  -
    */
-  const renderAdmin = () => {
-    return <div>Admin</div>;
-  };
+  // const renderAdmin = () => {
+  //   return <div>Admin</div>;
+  // };
 
   const renderTabs = () => {
     return (

@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { reduxForm, Field } from "redux-form";
 
-import { Button, TextField } from "@material-ui/core";
+import { Button } from "@material-ui/core";
 
 import { signUserIn, signUserOut } from "../../../actions";
 

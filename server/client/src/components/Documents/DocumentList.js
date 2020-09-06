@@ -21,11 +21,11 @@ import { fetchDocuments } from "../../actions";
 const DocumentList = (props) => {
   const [page, setPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
-  const [numItems, setNumItems] = useState(0);
 
   useEffect(() => {
-    console.log("rendering");
     props.fetchDocuments({ n: itemsPerPage });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [itemsPerPage]);
 
   const onNextPageClick = () => {

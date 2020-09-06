@@ -14,7 +14,7 @@ const DocumentPreview = (props) => {
     if (file) {
       setPreviewUrl(URL.createObjectURL(file));
     }
-  }, []);
+  }, [file]);
 
   if (!file) {
     return null;

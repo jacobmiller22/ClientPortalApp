@@ -1,13 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import {
-  Typography,
-  Toolbar,
-  Button,
-  DialogTitle,
-  Container,
-} from "@material-ui/core";
+import { Typography, Toolbar, Button, DialogTitle } from "@material-ui/core";
 
 import UserList from "./UserList";
 import LoadMessage from "../Loading/LoadMessage";

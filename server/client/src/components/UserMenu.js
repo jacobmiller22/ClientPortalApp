@@ -9,13 +9,12 @@ import {
   List,
   ListItem,
   ListItemText,
-  Typography,
   ListItemIcon,
 } from "@material-ui/core";
 import SupervisorAccountSharpIcon from "@material-ui/icons/SupervisorAccountSharp";
 
 const UserMenu = (props) => {
-  const [open, setOpen] = useState(null);
+  const [open, setOpen] = useState(false);
 
   const { auth } = props;
 

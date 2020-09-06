@@ -1,19 +1,11 @@
 import React from "react";
 import { connect } from "react-redux";
 
-// MUI
 import "../styling/Uploader.css";
-import Typography from "@material-ui/core/Typography";
+import { Typography } from "@material-ui/core";
 
-// Components
-import FileUploadForm from "../Forms/FileUploadForm";
 import DocumentForm from "../Forms/DocumentForm";
-import DocumentPreview from "./DocumentPreview";
 
-// Helper libraries
-import _ from "lodash";
-
-// Actions
 import { uploadFormData } from "../../actions";
 
 const Uploader = (props) => {

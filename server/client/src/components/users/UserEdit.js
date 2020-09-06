@@ -2,28 +2,19 @@ import React, { useState, useEffect } from "react";
 
 import {
   Typography,
-  IconButton,
   Button,
   DialogTitle,
   DialogContent,
 } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    width: "80%",
-  },
-}));
 
 const UserEdit = (props) => {
-  const classes = useStyles();
-
   const [debouncedUser, setDebouncedUser] = useState({ email: "" });
 
   useEffect(() => {
     setDebouncedUser({
       email: props.user.email,
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
