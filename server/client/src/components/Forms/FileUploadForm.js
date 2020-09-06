@@ -12,19 +12,19 @@ class FileUploadForm extends React.Component {
   renderFormButton = (props) => {
     return (
       <Button
-        variant="contained"
-        color="primary"
-        component="label"
+        variant='contained'
+        color='primary'
+        component='label'
         style={{ margin: "5px" }}>
         {props.label}
         <input
           {...props.input}
-          type="file"
-          accept=".pdf"
+          type='file'
+          accept='.pdf'
           style={{ display: "none" }}
           multiple={this.props.multiple}
           value={undefined}
-          encType="multipart/form-data"
+          encType='multipart/form-data'
         />
       </Button>
     );
@@ -37,14 +37,14 @@ class FileUploadForm extends React.Component {
     return (
       <form onSubmit={this.props.handleSubmit(this.onSubmit)}>
         <Field
-          name="documents"
-          label="Browse"
+          name='documents'
+          label='Browse'
           component={this.renderFormButton}
         />
         <Button
-          type="submit"
-          variant="contained"
-          color="primary"
+          type='submit'
+          variant='contained'
+          color='primary'
           style={{ margin: "5px" }}>
           Submit
         </Button>

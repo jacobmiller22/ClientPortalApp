@@ -7,6 +7,7 @@ import Typography from "@material-ui/core/Typography";
 
 // Components
 import FileUploadForm from "../Forms/FileUploadForm";
+import DocumentForm from "../Forms/DocumentForm";
 import DocumentPreview from "./DocumentPreview";
 
 // Helper libraries
@@ -16,21 +17,20 @@ import _ from "lodash";
 import { uploadFormData } from "../../actions";
 
 const Uploader = (props) => {
-  const renderSelectedFiles = () => {
-    if (!props.selectedFiles || !props.selectedFiles.values) {
-      return null;
-    }
-    const selected = props.selectedFiles.values.documents;
-    console.log(selected);
+  // const renderSelectedFiles = () => {
+  //   if (!props.selectedFiles || !props.selectedFiles.values) {
+  //     return null;
+  //   }
+  //   const selected = props.selectedFiles.values.documents;
 
-    return _.map(selected, (file) => {
-      return (
-        <div key={file.name}>
-          <DocumentPreview file={file} />
-        </div>
-      );
-    });
-  };
+  //   return _.map(selected, (file) => {
+  //     return (
+  //       <div key={file.name}>
+  //         <DocumentPreview file={file} />
+  //       </div>
+  //     );
+  //   });
+  // };
 
   //  const fileArray = Array.from(fileList);
   const onFormSubmit = (fileList) => {
@@ -73,10 +73,7 @@ const Uploader = (props) => {
   return (
     <div className='wrapper'>
       {renderInstructions()}
-      <div className='content'>
-        <FileUploadForm onSubmit={onFormSubmit} multiple />
-        {renderSelectedFiles()}
-      </div>
+      <DocumentForm onSubmit={onFormSubmit} multiple fileTypes='.pdf' />
     </div>
   );
 };

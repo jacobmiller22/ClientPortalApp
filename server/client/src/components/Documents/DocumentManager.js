@@ -1,42 +1,41 @@
-import React from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
 
-import { Toolbar, Button } from "@material-ui/core";
+import { Toolbar, Button, Tabs, Tab } from "@material-ui/core";
 
 import "../styling/Center.css";
 
 import DocumentList from "./DocumentList";
 import LoadMessage from "../Loading/LoadMessage";
 
-class DocumentManager extends React.Component {
+const DocumentManager = (props) => {
+  const [tab, setTab] = useState(0);
+
   /**
    * Displays options in the subheader containing multiple administrator actions.
    * These actions include:
    *  - User Selector
    *  -
    */
-  renderAdmin() {
+  const renderAdmin = () => {
     return <div>Admin</div>;
-  }
+  };
 
-  renderOptions() {
+  const renderTabs = () => {
     return (
-      <Toolbar style={{ backgroundColor: "#f6f7f7" }}>
-        <Button color='primary' variant='outlined'>
-          Contact Us!
-        </Button>
-        <Button color='primary' variant='outlined'>
-          Contact Us!
-        </Button>
-        <Button color='primary' variant='outlined'>
-          Contact Us!
-        </Button>
-      </Toolbar>
+      <>
+        <Toolbar style={{ backgroundColor: "#f6f7f7" }}>
+          <Tabs value={tab} onChange={(_, newVal) => setTab(newVal)}>
+            <Tab label='Uploaded by me' value={0} />
+            <Tab label='Provided for me' value={1} />
+          </Tabs>
+        </Toolbar>
+      </>
     );
-  }
+  };
 
-  renderFileList() {
-    if (!this.props.currentUser) {
+  const renderList = () => {
+    if (!props.currentUser) {
       return (
         <div className='centered'>
           <LoadMessage color='primary' message='Signing in...' />
@@ -44,18 +43,19 @@ class DocumentManager extends React.Component {
       );
     }
 
-    return <DocumentList title='Uploaded by me' />;
-  }
+    if (tab === 0) {
+      return <DocumentList title='Uploaded by me' />;
+    }
+    return <DocumentList title='Provided for me' />;
+  };
 
-  render() {
-    return (
-      <div>
-        {this.renderOptions()}
-        {this.renderFileList()}
-      </div>
-    );
-  }
-}
+  return (
+    <div>
+      {renderTabs()}
+      {renderList()}
+    </div>
+  );
+};
 
 const mapStateToProps = (state) => {
   return {

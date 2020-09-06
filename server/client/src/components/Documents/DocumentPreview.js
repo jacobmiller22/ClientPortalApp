@@ -1,18 +1,33 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
-class DocumentPreview extends React.Component {
-  state = { previewURL: "" };
+import { Document, Page } from "react-pdf";
 
-  componentDidMount() {
-    if (this.props.file) {
-      this.setState({ previewURL: URL.createObjectURL(this.props.file) });
+import { pdfjs } from "react-pdf";
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
+
+const DocumentPreview = (props) => {
+  const [previewUrl, setPreviewUrl] = useState("");
+
+  const { file } = props;
+
+  useEffect(() => {
+    if (file) {
+      setPreviewUrl(URL.createObjectURL(file));
     }
+  }, []);
+
+  if (!file) {
+    return null;
   }
 
-  render() {
-    console.log(this.state.previewURL);
-    return <img src={this.state.previewURL} alt="Preview" />;
+  if (file.type === "application/pdf") {
+    return (
+      <Document file={file}>
+        <Page pageNumber={1} height={300} />
+      </Document>
+    );
   }
-}
+  return <img height={300} src={previewUrl} alt={file.name} />;
+};
 
 export default DocumentPreview;

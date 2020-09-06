@@ -59,10 +59,8 @@ export const fetchDocuments = ({ n, nextPageToken, currPageNum }) => async (
 
   if (!currentUser) return;
 
-  console.log(n);
-
   const listRef = storageRef.child(
-    `User-Documents/U-${currentUser.uid}/Client-Provided/`
+    `User-Documents/${currentUser.uid}/Client-Provided/`
   );
 
   const listNextPage = async (nextPageToken) => {

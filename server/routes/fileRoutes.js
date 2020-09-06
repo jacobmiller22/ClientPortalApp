@@ -26,25 +26,25 @@ var upload = multer({
 module.exports = (app) => {
   app.get("/api/files", requireLogin, async (req, res) => {
     const admin = require("../services/firebaseAdmin.js").createFireBaseAdmin();
-    // admin
-    //   .storage()
-    //   .bucket()
-    //   .admin.auth()
-    //   .verifyIdToken(req.query.currentUserToken)
-    //   .then(async (decodedToken) => {
-    //     let uid = decodedToken.uid;
+    admin
+      .storage()
+      .bucket()
+      .admin.auth()
+      .verifyIdToken(req.query.currentUserToken)
+      .then(async (decodedToken) => {
+        let uid = decodedToken.uid;
 
-    //     try {
-    //       const files = await File.find({ uploadAuthor: uid });
-    //       res.send(files);
-    //     } catch (error) {
-    //       console.log(error);
-    //     }
-    //   })
-    //   .catch(function (error) {
-    //     console.log("Error:");
-    //     console.log(error);
-    //   });
+        try {
+          const files = await File.find({ uploadAuthor: uid });
+          res.send(files);
+        } catch (error) {
+          console.log(error);
+        }
+      })
+      .catch(function (error) {
+        console.log("Error:");
+        console.log(error);
+      });
   });
 
   app.post(
@@ -58,7 +58,7 @@ module.exports = (app) => {
       for (let i = 0; i < req.files.length; i++) {
         const { authorizedBy } = req;
         console.log("auth by", authorizedBy);
-        const destination = `User-Documents/U-${authorizedBy.uid}/Client-Provided/${req.files[i].filename}`;
+        const destination = `User-Documents/${authorizedBy.uid}/Client-Provided/${req.files[i].filename}`;
         await adminSDK
           .storage()
           .bucket()

@@ -24,6 +24,7 @@ const DocumentList = (props) => {
   const [numItems, setNumItems] = useState(0);
 
   useEffect(() => {
+    console.log("rendering");
     props.fetchDocuments({ n: itemsPerPage });
   }, [itemsPerPage]);
 
