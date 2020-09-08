@@ -29,6 +29,7 @@ const DocumentForm = (props) => {
         <input
           type='file'
           name='file'
+          onClick={(e) => (e.target.value = null)}
           onChange={onFileSelect}
           accept={props.fileTypes}
           style={{ display: "none" }}
@@ -53,8 +54,18 @@ const DocumentForm = (props) => {
 
   return (
     <>
-      <form onSubmit={() => props.onSubmit(selected)}>
-        <h1>File Upload</h1>
+      <form
+        onSubmit={(e) => {
+          // TODO: Run some validation
+          e.preventDefault();
+
+          if (!selected.length) {
+            return;
+          }
+
+          props.onSubmit(selected);
+          setSelected([]);
+        }}>
         {renderInput()}
         {renderSubmit()}
       </form>

@@ -7,7 +7,7 @@ module.exports = async (req, res, next) => {
     .then(async function (decodedToken) {
       // Verify admin
       if (decodedToken.administrator) {
-        req.authorizedBy = decodedToken;
+        req.sender = decodedToken;
         next();
       }
       throw "Request made by unauthorized user";

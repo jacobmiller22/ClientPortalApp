@@ -1,41 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
 
 import "../styling/Uploader.css";
 import { Typography } from "@material-ui/core";
 
 import DocumentForm from "../Forms/DocumentForm";
+import UserSearch from "../Users/UserSearch";
+import LoadMessage from "../Loading/LoadMessage";
 
-import { uploadFormData } from "../../actions";
+import { uploadFormData, fetchUsers } from "../../actions";
 
 const Uploader = (props) => {
-  // const renderSelectedFiles = () => {
-  //   if (!props.selectedFiles || !props.selectedFiles.values) {
-  //     return null;
-  //   }
-  //   const selected = props.selectedFiles.values.documents;
+  const intitialSelectedState = { email: "" };
+  const [selected, setSelected] = useState(intitialSelectedState);
 
-  //   return _.map(selected, (file) => {
-  //     return (
-  //       <div key={file.name}>
-  //         <DocumentPreview file={file} />
-  //       </div>
-  //     );
-  //   });
-  // };
-
-  //  const fileArray = Array.from(fileList);
-  const onFormSubmit = (fileList) => {
-    const fileArray = Array.from(fileList);
-
-    let formData = new FormData();
-
-    for (var key in fileArray) {
-      formData.append(`formData`, fileArray[key]);
-    }
-
-    props.uploadFormData(formData);
-  };
+  const { currentUser } = props.auth;
+  if (!currentUser) {
+    return <div>sign in!</div>;
+  }
 
   const renderInstructions = () => {
     return (
@@ -62,16 +44,54 @@ const Uploader = (props) => {
     );
   };
 
+  const renderUserSearch = () => {
+    const { currentUser, permissions } = props.auth;
+
+    if (!currentUser) {
+      return <LoadMessage message='Please sign in' color='primary' />;
+    }
+    if (!permissions.administrator) {
+      // User is not authorized to view user list
+      return (
+        <Typography color='error'>
+          You are not authorized to view this page!
+        </Typography>
+      );
+    }
+
+    return (
+      <UserSearch
+        selected={selected}
+        handleChange={(e, user) => setSelected(user)}
+      />
+    );
+  };
+
+  const onFormSubmit = (fileList) => {
+    let formData = new FormData();
+    const fileArray = Array.from(fileList);
+    for (var key in fileArray) {
+      formData.append(`formData`, fileArray[key]);
+    }
+
+    // if (!formData)
+    const { uid, email, displayName } = !selected.uid ? currentUser : selected;
+    props.uploadFormData(formData, { uid, email, displayName });
+  };
+
   return (
     <div className='wrapper'>
       {renderInstructions()}
+      {renderUserSearch()}
       <DocumentForm onSubmit={onFormSubmit} multiple fileTypes='.pdf' />
     </div>
   );
 };
 
 const mapStateToProps = (state) => {
-  return { selectedFiles: state.form.documentForm };
+  return { selectedFiles: state.form.documentForm, auth: state.auth };
 };
 
-export default connect(mapStateToProps, { uploadFormData })(Uploader);
+export default connect(mapStateToProps, { uploadFormData, fetchUsers })(
+  Uploader
+);

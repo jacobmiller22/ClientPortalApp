@@ -25,7 +25,7 @@ const verifyAuthorization = async (resultOnly) => {
   }
 };
 
-export const uploadFormData = (formData) => async (dispatch) => {
+export const uploadFormData = (formData, user) => async (dispatch) => {
   const { currentUser } = authRef;
 
   if (!currentUser) return;
@@ -37,7 +37,8 @@ export const uploadFormData = (formData) => async (dispatch) => {
       idtoken: token,
     },
     params: {
-      provider: "blaj",
+      sender: currentUser,
+      reciever: user,
     },
   });
 
@@ -45,23 +46,22 @@ export const uploadFormData = (formData) => async (dispatch) => {
     type: types.UPLOAD_DOCUMENTS,
     payload: res.data,
   });
-
-  dispatch(reset("documentForm"));
 };
 
 /**
  * @params n - The number of documents to be fetched. An n < 1 will cause all documents to be fetched
  **/
-export const fetchDocuments = ({ n, nextPageToken, currPageNum }) => async (
-  dispatch
-) => {
+export const fetchDocuments = ({
+  n,
+  nextPageToken,
+  currPageNum,
+  path,
+}) => async (dispatch) => {
   const { currentUser } = authRef;
 
   if (!currentUser) return;
 
-  const listRef = storageRef.child(
-    `User-Documents/${currentUser.uid}/Client-Provided/`
-  );
+  const listRef = storageRef.child(`${path[0]}/${currentUser.uid}/${path[1]}/`);
 
   const listNextPage = async (nextPageToken) => {
     const nextPage = await listRef.list({
@@ -97,7 +97,7 @@ export const fetchDocuments = ({ n, nextPageToken, currPageNum }) => async (
 
 export const fetchUsers = (n) => async (dispatch) => {
   const { currentUser } = authRef;
-
+  console.log("fetching");
   if (!currentUser) return;
 
   const result = await verifyAuthorization();
@@ -110,6 +110,7 @@ export const fetchUsers = (n) => async (dispatch) => {
       maxResults: n,
     },
   });
+
   dispatch({
     type: types.FETCH_USERS,
     payload: res.data,

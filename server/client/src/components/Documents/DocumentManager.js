@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 
 import { Toolbar, Tabs, Tab } from "@material-ui/core";
@@ -10,7 +10,6 @@ import LoadMessage from "../Loading/LoadMessage";
 
 const DocumentManager = (props) => {
   const [tab, setTab] = useState(0);
-
   /**
    * Displays options in the subheader containing multiple administrator actions.
    * These actions include:
@@ -44,9 +43,20 @@ const DocumentManager = (props) => {
     }
 
     if (tab === 0) {
-      return <DocumentList title='Uploaded by me' />;
+      return (
+        <DocumentList
+          title='Uploaded by me'
+          path={["User-Documents", "Client-Provided"]}
+        />
+      );
     }
-    return <DocumentList title='Provided for me' />;
+
+    return (
+      <DocumentList
+        title='Provided for me'
+        path={["User-Documents", "Business-Provided"]}
+      />
+    );
   };
 
   return (

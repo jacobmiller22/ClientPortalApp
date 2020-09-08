@@ -22,9 +22,6 @@ module.exports = (app) => {
     const { email, password } = req.body;
     const newUser = { email, password };
 
-    // create user with firebase
-    console.log(newUser);
-
     // Firebase needs email, password
     // optionally give:
     // displaName, phoneNumber, emailVerified

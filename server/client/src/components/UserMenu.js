@@ -13,6 +13,8 @@ import {
 } from "@material-ui/core";
 import SupervisorAccountSharpIcon from "@material-ui/icons/SupervisorAccountSharp";
 
+import SignInOut from "./Forms/Authentication/SignInOut";
+
 const UserMenu = (props) => {
   const [open, setOpen] = useState(false);
 
@@ -50,6 +52,11 @@ const UserMenu = (props) => {
           </ListItem>
           <ListItem>
             <ListItemText>Help</ListItemText>
+          </ListItem>
+          <ListItem>
+            <ListItemText>
+              <SignInOut onClick={() => setOpen(false)} />
+            </ListItemText>
           </ListItem>
         </List>
       </Drawer>

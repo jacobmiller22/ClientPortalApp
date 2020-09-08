@@ -23,13 +23,14 @@ const DocumentList = (props) => {
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
   useEffect(() => {
-    props.fetchDocuments({ n: itemsPerPage });
+    props.fetchDocuments({ path: props.path, n: itemsPerPage });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [itemsPerPage]);
+  }, [itemsPerPage, props.title]);
 
   const onNextPageClick = () => {
     props.fetchDocuments({
+      path: props.path,
       n: itemsPerPage,
       nextPageToken: props.documents.nextPageToken,
     });
@@ -38,6 +39,7 @@ const DocumentList = (props) => {
 
   const onPreviousPageClick = () => {
     props.fetchDocuments({
+      path: props.path,
       n: itemsPerPage,
       currPageNum: page,
     });
