@@ -48,8 +48,6 @@ const UserList = (props) => {
     });
   };
 
-  // const renderSearchBar = () => {};
-
   return (
     <div className={classes.root}>
       <List className={classes.list}>

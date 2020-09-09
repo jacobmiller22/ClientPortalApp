@@ -1,27 +1,31 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
-import { Button, Typography } from "@material-ui/core";
-
-import LoadMessage from "../Loading/LoadMessage";
+import {
+  Button,
+  Typography,
+  ListItemSecondaryAction,
+  ListItemText,
+} from "@material-ui/core";
 
 import { formatBytesWhole } from "../../utils/formatting";
 
-class DocumentDetail extends React.Component {
-  state = { meta: null, url: null };
+const DocumentDetail = (props) => {
+  const [meta, setMeta] = useState(null);
+  const [url, setURL] = useState(null);
 
-  componentDidMount() {
-    this.props.doc.getMetadata().then((doc) => {
-      this.setState({ meta: doc });
+  useEffect(() => {
+    props.doc.getMetadata().then((doc) => {
+      setMeta(doc);
     });
-    this.props.doc.getDownloadURL().then((url) => {
-      this.setState({ url });
+    props.doc.getDownloadURL().then((url) => {
+      setURL(url);
     });
-  }
+  }, []);
 
-  onViewClick = (e) => {
+  const onViewClick = (e) => {
     e.preventDefault();
     const a = document.createElement("a");
-    const url = this.state.url;
+    const url = url;
 
     a.href = url;
     a.target = "_blank";
@@ -37,40 +41,35 @@ class DocumentDetail extends React.Component {
     a.click();
   };
 
-  renderViewButton() {
-    if (!this.state.url) {
-      //<LoadMessage inline color="primary" message="url" />
+  const renderViewButton = () => {
+    if (!url) {
       return null;
     }
     return (
-      <Button onClick={this.onViewClick} color='primary' variant='outlined'>
+      <Button onClick={onViewClick} color='primary' variant='outlined'>
         View
       </Button>
     );
-  }
+  };
 
-  renderDetail() {
-    const { meta } = this.state;
+  const renderDetail = () => {
     return (
       <div key={meta.fullPath}>
-        <Typography display='inline'>
-          <strong>Name: </strong> {meta.name}
-        </Typography>
-        <Typography display='inline'>
-          <strong>Size: </strong> {formatBytesWhole(meta.size)}
-        </Typography>
+        <ListItemText inset secondary={`${formatBytesWhole(meta.size)}`}>
+          {meta.name}
+        </ListItemText>
 
-        {this.renderViewButton()}
+        <Typography display='inline'></Typography>
+
+        <ListItemSecondaryAction>{renderViewButton()}</ListItemSecondaryAction>
       </div>
     );
-  }
+  };
 
-  render() {
-    if (this.state.meta) {
-      return <div>{this.renderDetail()}</div>;
-    }
-    return <LoadMessage color='primary' message='Loading File' />;
+  if (!meta) {
+    return null;
   }
-}
+  return <div>{renderDetail()}</div>;
+};
 
 export default DocumentDetail;

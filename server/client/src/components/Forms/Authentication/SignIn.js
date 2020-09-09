@@ -2,14 +2,15 @@ import React from "react";
 import { connect } from "react-redux";
 import { reduxForm, Field } from "redux-form";
 
-import { Button } from "@material-ui/core";
+import { Button, TextField, Container } from "@material-ui/core";
+
+import validateEmails from "../../../utils/validateEmails";
 
 import { signUserIn, signUserOut } from "../../../actions";
 
 const SignIn = (props) => {
   const onSubmit = (values) => {
     const { email, password } = values;
-    console.log(values);
     props.signUserIn(email, password);
   };
 
@@ -24,27 +25,72 @@ const SignIn = (props) => {
         </Button>
       );
     }
-    return (
-      <form onSubmit={props.handleSubmit((values) => onSubmit(values))}>
-        <Field name='email' type='text' component='input' placeholder='Email' />
-        <Field
-          name='password'
-          type='password'
-          component='input'
-          placeholder='Password'
+
+    const renderTextField = ({
+      label,
+      input,
+      type,
+      meta: { touched, error },
+    }) => {
+      const helperText = error && touched ? error : "";
+      const showError = touched && error ? true : false;
+
+      return (
+        <TextField
+          label={label}
+          type={type}
+          error={showError}
+          helperText={helperText}
+          {...input}
+          style={{ width: "35ch" }}
         />
-        <Button
-          type='submit'
-          variant='contained'
-          color='primary'
-          style={{ margin: 5 }}>
-          Login
-        </Button>
-      </form>
+      );
+    };
+
+    return (
+      <Container>
+        <form onSubmit={props.handleSubmit((values) => onSubmit(values))}>
+          <div>
+            <Field name='email' component={renderTextField} label='Email' />
+          </div>
+          <div>
+            <Field
+              name='password'
+              type='password'
+              component={renderTextField}
+              label='Password'
+            />
+          </div>
+          <div>
+            <Button
+              type='submit'
+              variant='contained'
+              color='primary'
+              style={{ margin: 5 }}>
+              Sign in
+            </Button>
+          </div>
+        </form>
+      </Container>
     );
   };
 
   return <div>{renderContent()}</div>;
+};
+
+const validate = (values) => {
+  const errors = {};
+  const required = ["email", "password"];
+
+  required.forEach((field) => {
+    if (!values[field]) {
+      errors[field] = "Required";
+    }
+  });
+  if (values.email) {
+    errors.email = validateEmails(values.email);
+  }
+  return errors;
 };
 
 const mapStateToProps = (state) => {
@@ -53,6 +99,7 @@ const mapStateToProps = (state) => {
 
 const wrappedForm = reduxForm({
   form: "loginForm",
+  validate,
 })(SignIn);
 
 export default connect(mapStateToProps, { signUserIn, signUserOut })(

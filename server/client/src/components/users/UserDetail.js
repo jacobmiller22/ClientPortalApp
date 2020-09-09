@@ -29,9 +29,7 @@ const UserDetail = (props) => {
   const { user } = props;
 
   const handleDelete = () => {
-    console.log("deleting user", user);
     setDeleteOpen(false);
-    // delete User
     props.deleteUser(user.uid);
   };
 

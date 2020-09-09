@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { connect } from "react-redux";
 
 import "../styling/Uploader.css";
-import { Typography } from "@material-ui/core";
+import { Typography, List, ListItem } from "@material-ui/core";
 
 import DocumentForm from "../Forms/DocumentForm";
 import UserSearch from "../Users/UserSearch";
@@ -16,7 +16,7 @@ const Uploader = (props) => {
 
   const { currentUser } = props.auth;
   if (!currentUser) {
-    return <div>sign in!</div>;
+    return <LoadMessage color='primary' message='Please sign in' />;
   }
 
   const renderInstructions = () => {
@@ -28,18 +28,17 @@ const Uploader = (props) => {
         <Typography variant='h5' color='secondary'>
           Upload content to your provider here
         </Typography>
-
-        <ol>
-          <li>
+        <List>
+          <ListItem alignItems='flex-start'>
             <Typography>Click browse!</Typography>
-          </li>
-          <li>
+          </ListItem>
+          <ListItem alignItems='flex-start'>
             <Typography>Select file to upload!</Typography>
-          </li>
-          <li>
+          </ListItem>
+          <ListItem alignItems='flex-start'>
             <Typography>Click upload!</Typography>
-          </li>
-        </ol>
+          </ListItem>
+        </List>
       </div>
     );
   };
@@ -52,11 +51,7 @@ const Uploader = (props) => {
     }
     if (!permissions.administrator) {
       // User is not authorized to view user list
-      return (
-        <Typography color='error'>
-          You are not authorized to view this page!
-        </Typography>
-      );
+      return null;
     }
 
     return (

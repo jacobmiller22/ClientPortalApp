@@ -37,7 +37,7 @@ const DocumentManager = (props) => {
     if (!props.currentUser) {
       return (
         <div className='centered'>
-          <LoadMessage color='primary' message='Signing in...' />
+          <LoadMessage color='primary' message='Please sign in' />
         </div>
       );
     }

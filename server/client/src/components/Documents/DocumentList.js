@@ -12,13 +12,28 @@ import {
   FormControl,
 } from "@material-ui/core";
 import "../styling/Center.css";
+import { makeStyles } from "@material-ui/core/styles";
 
 import DocumentDetail from "./DocumentDetail";
 import LoadMessage from "../Loading/LoadMessage";
 
 import { fetchDocuments } from "../../actions";
 
+const useStyles = makeStyles((theme) => ({
+  root: {
+    display: "flex",
+    flexWrap: "wrap",
+    justifyContent: "space-around",
+    overflow: "hidden",
+  },
+  list: {
+    width: "100%",
+  },
+}));
+
 const DocumentList = (props) => {
+  const classes = useStyles();
+
   const [page, setPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
@@ -127,7 +142,7 @@ const DocumentList = (props) => {
 
     return items.map((doc) => {
       return (
-        <ListItem key={doc.fullPath}>
+        <ListItem divider key={doc.fullPath}>
           <DocumentDetail doc={doc} />
         </ListItem>
       );
@@ -136,7 +151,7 @@ const DocumentList = (props) => {
 
   return (
     <div className='centered'>
-      <List>
+      <List className={classes.list}>
         <Typography variant='h5'>{props.title}</Typography>
         {renderPages()}
         {renderList()}

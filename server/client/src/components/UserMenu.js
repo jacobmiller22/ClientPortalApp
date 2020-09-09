@@ -20,7 +20,7 @@ const UserMenu = (props) => {
 
   const { auth } = props;
 
-  const renderAccessLevel = () => {
+  const renderUserTitles = () => {
     if (auth) {
       if (auth.permissions.administrator) {
         return (
@@ -28,15 +28,27 @@ const UserMenu = (props) => {
             <ListItemIcon>
               <SupervisorAccountSharpIcon color='primary' />
             </ListItemIcon>
-            <ListItemText>Administrator</ListItemText>
+            <ListItemText
+              secondary={currentUser.displayName || currentUser.email}>
+              {currentUser.email}
+            </ListItemText>
           </ListItem>
         );
       }
-      return <ListItemText>User</ListItemText>;
+      return (
+        <ListItem>
+          <ListItemText
+            inset
+            secondary={currentUser.displayName || currentUser.email}>
+            {currentUser.email}
+          </ListItemText>
+        </ListItem>
+      );
     }
     return <div>tbd</div>;
   };
 
+  const { currentUser } = props.auth;
   return (
     <>
       <Button onClick={() => setOpen(true)} color='inherit'>
@@ -44,7 +56,7 @@ const UserMenu = (props) => {
       </Button>
       <Drawer open={open} onClose={() => setOpen(false)} anchor={"right"}>
         <List>
-          <ListItem>{renderAccessLevel()}</ListItem>
+          {renderUserTitles()}
 
           <Divider />
           <ListItem>

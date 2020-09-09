@@ -1,7 +1,6 @@
 import axios from "axios";
 
 import * as types from "./types";
-import { reset } from "redux-form";
 
 import { authRef, storageRef } from "../firebase";
 

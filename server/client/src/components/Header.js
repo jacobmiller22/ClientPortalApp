@@ -37,6 +37,21 @@ function Header(props) {
     }
   };
 
+  const renderAdmin = () => {
+    if (!props.permissions) {
+      return null;
+    }
+    if (props.permissions.administrator) {
+      return (
+        <>
+          <Button color='inherit' component={Link} to='/users'>
+            Manage Users
+          </Button>
+        </>
+      );
+    }
+  };
+
   const renderToolbar = () => {
     return (
       <Toolbar>
@@ -54,9 +69,7 @@ function Header(props) {
         <Button color='inherit' component={Link} to='/documents'>
           My Documents
         </Button>
-        <Button color='inherit' component={Link} to='/users'>
-          Manage Users
-        </Button>
+        {renderAdmin()}
         <Typography align='right' style={{ flexGrow: 1 }}>
           {renderAuth()}
         </Typography>
@@ -72,7 +85,10 @@ function Header(props) {
 }
 
 const mapStateToProps = (state) => {
-  return { currentUser: state.auth.currentUser };
+  return {
+    currentUser: state.auth.currentUser,
+    permissions: state.auth.permissions,
+  };
 };
 
 export default connect(mapStateToProps, {
