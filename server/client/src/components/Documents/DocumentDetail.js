@@ -25,7 +25,6 @@ const DocumentDetail = (props) => {
   const onViewClick = (e) => {
     e.preventDefault();
     const a = document.createElement("a");
-    const url = url;
 
     a.href = url;
     a.target = "_blank";

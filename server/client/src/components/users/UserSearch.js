@@ -8,18 +8,16 @@ import LoadMessage from "../Loading/LoadMessage";
 
 import { fetchUsers } from "../../actions";
 
-const UserSearch = (props) => {
+const UserSearch = ({ fetchUsers, handleChange, selected, users }) => {
   useEffect(() => {
-    props.fetchUsers(100);
+    fetchUsers(100);
   }, []);
 
   const renderSearchBar = () => {
-    const { users } = props;
-
     return (
       <Autocomplete
-        onChange={props.handleChange}
-        value={props.selected}
+        onChange={handleChange}
+        value={selected}
         freeSolo
         options={users}
         getOptionLabel={(user) => user.email}

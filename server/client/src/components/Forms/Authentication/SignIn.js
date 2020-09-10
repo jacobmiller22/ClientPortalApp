@@ -8,10 +8,13 @@ import validateEmails from "../../../utils/validateEmails";
 
 import { signUserIn, signUserOut } from "../../../actions";
 
+import history from "../../../history";
+
 const SignIn = (props) => {
   const onSubmit = (values) => {
     const { email, password } = values;
     props.signUserIn(email, password);
+    history.push("/");
   };
 
   const renderContent = () => {
@@ -47,9 +50,11 @@ const SignIn = (props) => {
       );
     };
 
+    const { handleSubmit, pristine, submitting } = props;
+
     return (
       <Container>
-        <form onSubmit={props.handleSubmit((values) => onSubmit(values))}>
+        <form onSubmit={handleSubmit((values) => onSubmit(values))}>
           <div>
             <Field name='email' component={renderTextField} label='Email' />
           </div>

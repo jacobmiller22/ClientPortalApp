@@ -8,8 +8,13 @@ import "../styling/Center.css";
 import DocumentList from "./DocumentList";
 import LoadMessage from "../Loading/LoadMessage";
 
+import useAuthRoute from "../../hooks/useAuthRoute";
+
 const DocumentManager = (props) => {
   const [tab, setTab] = useState(0);
+
+  useAuthRoute();
+
   /**
    * Displays options in the subheader containing multiple administrator actions.
    * These actions include:

@@ -8,6 +8,8 @@ import LoadMessage from "../../Loading/LoadMessage";
 
 import { signUserIn, signUserOut } from "../../../actions";
 
+import history from "../../../history";
+
 const SignInOut = (props) => {
   if (!props.auth) {
     return <LoadMessage message=' ' />;
@@ -28,7 +30,10 @@ const SignInOut = (props) => {
     <Button
       color='primary'
       variant='outlined'
-      onClick={() => props.signUserOut()}>
+      onClick={() => {
+        props.signUserOut();
+        history.push("/auth");
+      }}>
       Sign out
     </Button>
   );
