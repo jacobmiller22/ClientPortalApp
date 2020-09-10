@@ -10,8 +10,8 @@ import LoadMessage from "../Loading/LoadMessage";
 
 import useAuthRoute from "../../hooks/useAuthRoute";
 
-const DocumentManager = (props) => {
-  const [tab, setTab] = useState(0);
+const DocumentManager = ({ currentUser }) => {
+  const [tab, setTab] = useState("Uploaded by me");
 
   useAuthRoute();
 
@@ -28,10 +28,10 @@ const DocumentManager = (props) => {
   const renderTabs = () => {
     return (
       <>
-        <Toolbar style={{ backgroundColor: "#f6f7f7" }}>
+        <Toolbar>
           <Tabs value={tab} onChange={(_, newVal) => setTab(newVal)}>
-            <Tab label='Uploaded by me' value={0} />
-            <Tab label='Provided for me' value={1} />
+            <Tab label='Uploaded by me' value={"Uploaded by me"} />
+            <Tab label='Provided for me' value={"Provided for me"} />
           </Tabs>
         </Toolbar>
       </>
@@ -39,7 +39,7 @@ const DocumentManager = (props) => {
   };
 
   const renderList = () => {
-    if (!props.currentUser) {
+    if (!currentUser) {
       return (
         <div className='centered'>
           <LoadMessage color='primary' message='Please sign in' />
@@ -47,21 +47,11 @@ const DocumentManager = (props) => {
       );
     }
 
-    if (tab === 0) {
-      return (
-        <DocumentList
-          title='Uploaded by me'
-          path={["User-Documents", "Client-Provided"]}
-        />
-      );
-    }
-
-    return (
-      <DocumentList
-        title='Provided for me'
-        path={["User-Documents", "Business-Provided"]}
-      />
-    );
+    const path =
+      tab === "Uploaded by me"
+        ? ["User-Documents", "Client-Provided"]
+        : ["User-Documents", "Business-Provided"];
+    return <DocumentList title={tab} path={path} />;
   };
 
   return (

@@ -11,13 +11,12 @@ import LoadMessage from "../Loading/LoadMessage";
 import { uploadFormData, fetchUsers } from "../../actions";
 import useAuthRoute from "../../hooks/useAuthRoute";
 
-const Uploader = (props) => {
+const Uploader = ({ uploadFormData, auth: { currentUser, permissions } }) => {
   const intitialSelectedState = { email: "" };
   const [selected, setSelected] = useState(intitialSelectedState);
 
   useAuthRoute();
 
-  const { currentUser } = props.auth;
   if (!currentUser) {
     return null;
   }
@@ -47,8 +46,6 @@ const Uploader = (props) => {
   };
 
   const renderUserSearch = () => {
-    const { currentUser, permissions } = props.auth;
-
     if (!currentUser) {
       return <LoadMessage message='Please sign in' color='primary' />;
     }
@@ -74,7 +71,7 @@ const Uploader = (props) => {
 
     // if (!formData)
     const { uid, email, displayName } = !selected.uid ? currentUser : selected;
-    props.uploadFormData(formData, { uid, email, displayName });
+    uploadFormData(formData, { uid, email, displayName });
   };
 
   return (

@@ -9,15 +9,15 @@ import {
 
 import { formatBytesWhole } from "../../utils/formatting";
 
-const DocumentDetail = (props) => {
+const DocumentDetail = ({ doc }) => {
   const [meta, setMeta] = useState(null);
   const [url, setURL] = useState(null);
 
   useEffect(() => {
-    props.doc.getMetadata().then((doc) => {
+    doc.getMetadata().then((doc) => {
       setMeta(doc);
     });
-    props.doc.getDownloadURL().then((url) => {
+    doc.getDownloadURL().then((url) => {
       setURL(url);
     });
   }, []);

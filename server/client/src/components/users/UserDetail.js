@@ -22,15 +22,13 @@ import CustomDialog from "../CustomDialog";
 import { deleteUser } from "../../actions";
 import UserEdit from "./UserEdit";
 
-const UserDetail = (props) => {
+const UserDetail = ({ deleteUser, user, currentUser }) => {
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
 
-  const { user } = props;
-
   const handleDelete = () => {
     setDeleteOpen(false);
-    props.deleteUser(user.uid);
+    deleteUser(user.uid);
   };
 
   const renderDeleteUser = () => {
@@ -75,7 +73,7 @@ const UserDetail = (props) => {
 
   const renderAdminActions = () => {
     // Prevents current user from changing their own information in the manage users tab
-    if (user.uid === props.currentUser.uid) {
+    if (user.uid === currentUser.uid) {
       return null;
     }
     return (

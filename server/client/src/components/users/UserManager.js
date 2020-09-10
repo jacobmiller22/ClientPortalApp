@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
 
 import { Typography, Toolbar, Button, DialogTitle } from "@material-ui/core";
@@ -7,65 +7,53 @@ import UserList from "./UserList";
 import LoadMessage from "../Loading/LoadMessage";
 import CustomDialog from "../CustomDialog";
 import SignUp from "../Forms/Authentication/SignUp";
+import useAuthRoute from "../../hooks/useAuthRoute";
 
-class UserManager extends React.Component {
-  state = {
-    openNewUserForm: false,
-  };
+const UserManager = ({ auth: { currentUser, permissions } }) => {
+  const [openNewUser, setOpenNewUser] = useState(false);
 
-  handleClickNewUser = () => {
-    this.setState({ openNewUserForm: true });
-  };
+  useAuthRoute();
 
-  handleDialogClose = () => {
-    this.setState({
-      openNewUserForm: false,
-    });
-  };
-
-  renderOptions() {
+  const renderOptions = () => {
     return (
-      <Toolbar style={{ backgroundColor: "#f6f7f7" }}>
-        <Button color='primary' onClick={this.handleClickNewUser}>
+      <Toolbar>
+        <Button
+          color='primary'
+          variant='outlined'
+          onClick={() => setOpenNewUser(true)}>
           Create new User
         </Button>
       </Toolbar>
     );
-  }
+  };
 
-  renderUserList() {
-    const { currentUser, permissions } = this.props.auth;
-
+  const renderUserList = () => {
     if (!currentUser) {
-      return <LoadMessage message='Please sign in' color='primary' />;
+      return null;
     }
     if (!permissions.administrator) {
       // User is not authorized to view user list
       return (
         <Typography color='error'>
-          You are not authorized to view this page!
+          You are not authorized to view page!
         </Typography>
       );
     }
 
     return <UserList />;
-  }
+  };
 
-  render() {
-    return (
-      <div>
-        <CustomDialog
-          open={this.state.openNewUserForm}
-          onClose={this.handleDialogClose}>
-          <DialogTitle>Create a User!</DialogTitle>
-          <SignUp header=' ' admin />
-        </CustomDialog>
-        {this.renderOptions()}
-        {this.renderUserList()}
-      </div>
-    );
-  }
-}
+  return (
+    <div>
+      <CustomDialog open={openNewUser} onClose={() => setOpenNewUser(false)}>
+        <DialogTitle>Create a User!</DialogTitle>
+        <SignUp header=' ' admin />
+      </CustomDialog>
+      {renderOptions()}
+      {renderUserList()}
+    </div>
+  );
+};
 
 const mapStateToProps = (state) => {
   return { auth: state.auth };

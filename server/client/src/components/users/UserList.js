@@ -9,6 +9,7 @@ import LoadMessage from "../Loading/LoadMessage";
 import LabeledCheckbox from "../Forms/LabeledCheckbox";
 
 import { fetchUsers } from "../../actions";
+import useAuthRoute from "../../hooks/useAuthRoute";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -22,20 +23,20 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const UserList = (props) => {
+const UserList = ({ fetchUsers, users }) => {
   const classes = useStyles();
 
   const [dense, setDense] = useState(false);
 
+  useAuthRoute();
+
   useEffect(() => {
-    props.fetchUsers(100);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    fetchUsers(100);
   }, []);
 
   const renderUserList = () => {
-    const { users } = props;
-
     if (!users || !users.length) {
+      // TODO: Delay loader by a few seconds
       return <LoadMessage color='primary' message='Loading users' />;
     }
 

@@ -10,12 +10,15 @@ import {
   InputLabel,
   MenuItem,
   FormControl,
+  FormGroup,
+  ListSubheader,
 } from "@material-ui/core";
 import "../styling/Center.css";
 import { makeStyles } from "@material-ui/core/styles";
 
 import DocumentDetail from "./DocumentDetail";
 import LoadMessage from "../Loading/LoadMessage";
+import LabeledCheckbox from "../Forms/LabeledCheckbox";
 
 import { fetchDocuments } from "../../actions";
 
@@ -31,30 +34,31 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const DocumentList = (props) => {
+const DocumentList = ({ fetchDocuments, path, documents, title }) => {
   const classes = useStyles();
 
   const [page, setPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [dense, setDense] = useState(false);
 
   useEffect(() => {
-    props.fetchDocuments({ path: props.path, n: itemsPerPage });
+    fetchDocuments({ path, n: itemsPerPage });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [itemsPerPage, props.title]);
+  }, [itemsPerPage, title]);
 
   const onNextPageClick = () => {
-    props.fetchDocuments({
-      path: props.path,
+    fetchDocuments({
+      path,
       n: itemsPerPage,
-      nextPageToken: props.documents.nextPageToken,
+      nextPageToken: documents.nextPageToken,
     });
     setPage(page + 1);
   };
 
   const onPreviousPageClick = () => {
-    props.fetchDocuments({
-      path: props.path,
+    fetchDocuments({
+      path,
       n: itemsPerPage,
       currPageNum: page,
     });
@@ -62,7 +66,7 @@ const DocumentList = (props) => {
   };
 
   const renderPages = () => {
-    if (props.documents.nextPageToken) {
+    if (documents.nextPageToken) {
       var isNextDisabled = false;
     } else {
       isNextDisabled = true;
@@ -79,10 +83,10 @@ const DocumentList = (props) => {
       );
     };
 
-    if (!props.documents.items) {
+    if (!documents.items) {
       return;
     }
-    const numResultsDisplay = `${props.documents.items.length} results`;
+    const numResultsDisplay = `${documents.items.length} results`;
 
     return (
       <>
@@ -127,10 +131,10 @@ const DocumentList = (props) => {
   };
 
   const renderList = () => {
-    if (!props.documents) {
+    if (!documents) {
       return <div>No documents</div>;
     }
-    const { items } = props.documents;
+    const { items } = documents;
 
     if (!items) {
       return (
@@ -142,7 +146,7 @@ const DocumentList = (props) => {
 
     return items.map((doc) => {
       return (
-        <ListItem divider key={doc.fullPath}>
+        <ListItem dense={dense} divider key={doc.fullPath}>
           <DocumentDetail doc={doc} />
         </ListItem>
       );
@@ -150,11 +154,19 @@ const DocumentList = (props) => {
   };
 
   return (
-    <div className='centered'>
+    <div className={classes.root}>
       <List className={classes.list}>
-        <Typography variant='h5'>{props.title}</Typography>
         {renderPages()}
-        {renderList()}
+        <FormGroup row>
+          <ListSubheader>{title}</ListSubheader>
+          <LabeledCheckbox
+            label='Dense'
+            checked={dense}
+            handleChange={() => setDense(!dense)}
+          />
+          {renderList()}
+        </FormGroup>
+
         {renderResultsPerPage()}
       </List>
     </div>

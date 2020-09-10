@@ -1,21 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import { reduxForm, Field } from "redux-form";
 import {
-  Typography,
   Button,
   DialogTitle,
   DialogContent,
   TextField,
 } from "@material-ui/core";
 
-const UserEdit = (props) => {
-  const [debouncedUser, setDebouncedUser] = useState({ email: "" });
-
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
+const UserEdit = ({
+  handleSubmit,
+  pristine,
+  submitting,
+  user,
+  handleClick,
+}) => {
   const renderTextField = ({
     label,
     input,
@@ -37,7 +36,6 @@ const UserEdit = (props) => {
     );
   };
 
-  const { handleSubmit, pristine, submitting } = props;
   return (
     <>
       <DialogTitle id='simple-dialog-title'>Modify User Info</DialogTitle>
@@ -49,7 +47,7 @@ const UserEdit = (props) => {
               name='email'
               component={renderTextField}
               label='Email'
-              value={props.user.email}
+              value={user.email}
             />
           </div>
           <div>
@@ -70,7 +68,7 @@ const UserEdit = (props) => {
             </Button>
           </div>
         </form>
-        <Button color='primary' variant='contained' onClick={props.handleClick}>
+        <Button color='primary' variant='contained' onClick={handleClick}>
           Delete User
         </Button>
       </DialogContent>
