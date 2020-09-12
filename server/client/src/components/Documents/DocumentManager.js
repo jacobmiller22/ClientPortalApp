@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
 
 import { Toolbar, Tabs, Tab } from "@material-ui/core";
@@ -8,12 +8,12 @@ import "../styling/Center.css";
 import DocumentList from "./DocumentList";
 import LoadMessage from "../Loading/LoadMessage";
 
-import useAuthRoute from "../../hooks/useAuthRoute";
-
 const DocumentManager = ({ currentUser }) => {
   const [tab, setTab] = useState("Uploaded by me");
 
-  useAuthRoute();
+  if (!currentUser) {
+    return null;
+  }
 
   /**
    * Displays options in the subheader containing multiple administrator actions.

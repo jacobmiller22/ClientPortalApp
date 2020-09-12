@@ -96,7 +96,7 @@ export const fetchDocuments = ({
 
 export const fetchUsers = (n) => async (dispatch) => {
   const { currentUser } = authRef;
-  console.log("fetching");
+
   if (!currentUser) return;
 
   const result = await verifyAuthorization();
@@ -189,7 +189,7 @@ export const registerAuthListener = () => async (dispatch) => {
   authRef.onAuthStateChanged(async (user) => {
     dispatch({
       type: types.USER_STATUS,
-      payload: user || null,
+      payload: user || {},
     });
 
     if (!user) {
@@ -197,7 +197,6 @@ export const registerAuthListener = () => async (dispatch) => {
     }
     // Check User's permissions
     const result = await user.getIdTokenResult().catch((error) => {
-      console.log(error);
       dispatch({
         type: types.TOKEN_RESULT_ERROR,
         payload: error,
@@ -225,4 +224,11 @@ export const signUserOut = () => (dispatch) => {
     console.log(error);
     dispatch({ type: types.SIGN_OUT_ERROR, payload: error });
   });
+};
+
+export const selectUsers = (users) => (dispatch) => {
+  dispatch({ type: types.SELECT_USERS, payload: users });
+};
+export const deselectUsers = (users) => (dispatch) => {
+  dispatch({ type: types.DESELECT_USERS, payload: users });
 };

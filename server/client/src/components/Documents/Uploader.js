@@ -9,15 +9,13 @@ import UserSearch from "../Users/UserSearch";
 import LoadMessage from "../Loading/LoadMessage";
 
 import { uploadFormData, fetchUsers } from "../../actions";
-import useAuthRoute from "../../hooks/useAuthRoute";
+
+import _ from "lodash";
 
 const Uploader = ({ uploadFormData, auth: { currentUser, permissions } }) => {
-  const intitialSelectedState = { email: "" };
-  const [selected, setSelected] = useState(intitialSelectedState);
+  const [selected, setSelected] = useState(null);
 
-  useAuthRoute();
-
-  if (!currentUser) {
+  if (!currentUser || _.isEmpty(currentUser)) {
     return null;
   }
 
@@ -68,9 +66,7 @@ const Uploader = ({ uploadFormData, auth: { currentUser, permissions } }) => {
     for (var key in fileArray) {
       formData.append(`formData`, fileArray[key]);
     }
-
-    // if (!formData)
-    const { uid, email, displayName } = !selected.uid ? currentUser : selected;
+    const { uid, email, displayName } = !selected ? currentUser : selected;
     uploadFormData(formData, { uid, email, displayName });
   };
 

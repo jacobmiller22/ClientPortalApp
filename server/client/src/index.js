@@ -7,11 +7,15 @@ import reduxThunk from "redux-thunk";
 import App from "./components/App";
 import reducers from "./reducers";
 
+import { registerAuthListener } from "./actions";
+
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const store = createStore(
   reducers,
   composeEnhancers(applyMiddleware(reduxThunk))
 );
+
+store.dispatch(registerAuthListener());
 
 ReactDOM.render(
   <Provider store={store}>

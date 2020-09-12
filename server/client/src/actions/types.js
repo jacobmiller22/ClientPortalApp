@@ -4,6 +4,8 @@ export const CREATE_USER = "create_user";
 export const DELETE_USER = "delete_user";
 export const UPDATE_USER = "update_user";
 export const MODIFY_USER_PERMISSIONS = "modify_user_permissions";
+export const SELECT_USERS = "select_users";
+export const DESELECT_USERS = "deselect_users";
 
 // Auth
 export const UPDATE_AUTH = "update_auth";

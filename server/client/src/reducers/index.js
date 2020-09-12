@@ -1,14 +1,17 @@
 import { combineReducers } from "redux";
 import { reducer as reduxForm } from "redux-form";
 import documentsReducer from "./documentsReducer";
-import usersReducer from "./usersReducer";
+import { allUsersReducer, selectedUsersReducer } from "./usersReducer";
 import { authReducer, authPermissionsReducer } from "./authReducer";
 import { authErrorReducer } from "./errorsReducer";
 
 export default combineReducers({
   // Custom
   documents: documentsReducer,
-  users: usersReducer,
+  users: combineReducers({
+    allUsers: allUsersReducer,
+    selectedUsers: selectedUsersReducer,
+  }),
   auth: combineReducers({
     currentUser: authReducer,
     permissions: authPermissionsReducer,

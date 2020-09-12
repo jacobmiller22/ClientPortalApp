@@ -20,7 +20,7 @@ const DocumentDetail = ({ doc }) => {
     doc.getDownloadURL().then((url) => {
       setURL(url);
     });
-  }, []);
+  }, [doc]);
 
   const onViewClick = (e) => {
     e.preventDefault();

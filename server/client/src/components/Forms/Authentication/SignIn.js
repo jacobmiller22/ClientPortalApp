@@ -68,6 +68,7 @@ const SignIn = (props) => {
           </div>
           <div>
             <Button
+              disabled={pristine || submitting}
               type='submit'
               variant='contained'
               color='primary'

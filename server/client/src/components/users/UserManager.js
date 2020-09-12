@@ -1,18 +1,25 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
 
-import { Typography, Toolbar, Button, DialogTitle } from "@material-ui/core";
+import { Toolbar, Button, DialogTitle } from "@material-ui/core";
 
 import UserList from "./UserList";
-import LoadMessage from "../Loading/LoadMessage";
+
 import CustomDialog from "../CustomDialog";
 import SignUp from "../Forms/Authentication/SignUp";
-import useAuthRoute from "../../hooks/useAuthRoute";
 
-const UserManager = ({ auth: { currentUser, permissions } }) => {
+import AuthDenied from "../Auth/AuthDenied";
+
+const UserManager = ({ auth: { currentUser, permissions }, selectedUsers }) => {
   const [openNewUser, setOpenNewUser] = useState(false);
 
-  useAuthRoute();
+  if (!currentUser) {
+    return null;
+  }
+
+  if (!permissions.administrator) {
+    return <AuthDenied />;
+  }
 
   const renderOptions = () => {
     return (
@@ -21,42 +28,33 @@ const UserManager = ({ auth: { currentUser, permissions } }) => {
           color='primary'
           variant='outlined'
           onClick={() => setOpenNewUser(true)}>
-          Create new User
+          Add User
+        </Button>
+        <Button
+          disabled={!selectedUsers.length}
+          color='primary'
+          variant='outlined'
+          onClick={() => setOpenNewUser(true)}>
+          Delete
         </Button>
       </Toolbar>
     );
   };
 
-  const renderUserList = () => {
-    if (!currentUser) {
-      return null;
-    }
-    if (!permissions.administrator) {
-      // User is not authorized to view user list
-      return (
-        <Typography color='error'>
-          You are not authorized to view page!
-        </Typography>
-      );
-    }
-
-    return <UserList />;
-  };
-
   return (
-    <div>
+    <>
       <CustomDialog open={openNewUser} onClose={() => setOpenNewUser(false)}>
         <DialogTitle>Create a User!</DialogTitle>
         <SignUp header=' ' admin />
       </CustomDialog>
       {renderOptions()}
-      {renderUserList()}
-    </div>
+      <UserList />;
+    </>
   );
 };
 
-const mapStateToProps = (state) => {
-  return { auth: state.auth };
+const mapStateToProps = ({ auth, users: { selectedUsers } }) => {
+  return { auth, selectedUsers };
 };
 
 export default connect(mapStateToProps)(UserManager);

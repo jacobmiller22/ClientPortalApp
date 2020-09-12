@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 
 import {
@@ -18,18 +18,26 @@ import VerifiedUserIcon from "@material-ui/icons/VerifiedUser";
 import EditIcon from "@material-ui/icons/Edit";
 
 import CustomDialog from "../CustomDialog";
+import LabeledCheckbox from "../Forms/LabeledCheckbox";
 
-import { deleteUser } from "../../actions";
+import { deleteUser, selectUsers, deselectUsers } from "../../actions";
 import UserEdit from "./UserEdit";
 
-const UserDetail = ({ deleteUser, user, currentUser }) => {
+const UserDetail = ({
+  deleteUser,
+  selectUsers,
+  deselectUsers,
+  user,
+  currentUser,
+  allChecked,
+}) => {
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [checked, setChecked] = useState(false);
 
-  const handleDelete = () => {
-    setDeleteOpen(false);
-    deleteUser(user.uid);
-  };
+  useEffect(() => {
+    allChecked ? setChecked(true) : setChecked(false);
+  }, [allChecked]);
 
   const renderDeleteUser = () => {
     return (
@@ -48,7 +56,13 @@ const UserDetail = ({ deleteUser, user, currentUser }) => {
             onClick={() => setDeleteOpen(false)}>
             Cancel
           </Button>
-          <Button variant='contained' color='primary' onClick={handleDelete}>
+          <Button
+            variant='contained'
+            color='primary'
+            onClick={() => {
+              setDeleteOpen(false);
+              deleteUser(user.uid);
+            }}>
             Delete
           </Button>
         </DialogActions>
@@ -97,13 +111,11 @@ const UserDetail = ({ deleteUser, user, currentUser }) => {
     );
   };
 
-  const handleDeleteOpen = () => setDeleteOpen(true);
-
   const renderDialogs = () => {
     return (
       <>
         <CustomDialog open={editOpen} onClose={handleDialogClose}>
-          <UserEdit user={user} handleClick={handleDeleteOpen} />
+          <UserEdit user={user} handleClick={() => setDeleteOpen(true)} />
         </CustomDialog>
         <CustomDialog open={deleteOpen} onClose={handleDialogClose}>
           {renderDeleteUser()}
@@ -125,7 +137,20 @@ const UserDetail = ({ deleteUser, user, currentUser }) => {
           Company Name
         </Typography>
       </ListItemText>
-      <ListItemSecondaryAction>{renderAdminActions()}</ListItemSecondaryAction>
+      <ListItemSecondaryAction>
+        {renderAdminActions()}
+        <LabeledCheckbox
+          checked={checked}
+          handleChange={() => {
+            setChecked(!checked);
+            if (!checked) {
+              selectUsers(user);
+            } else {
+              deselectUsers(user);
+            }
+          }}
+        />
+      </ListItemSecondaryAction>
     </>
   );
 };
@@ -134,4 +159,8 @@ const mapStateToProps = (state) => {
   return { currentUser: state.auth.currentUser };
 };
 
-export default connect(mapStateToProps, { deleteUser })(UserDetail);
+export default connect(mapStateToProps, {
+  deleteUser,
+  selectUsers,
+  deselectUsers,
+})(UserDetail);

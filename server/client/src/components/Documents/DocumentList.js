@@ -19,6 +19,9 @@ import { makeStyles } from "@material-ui/core/styles";
 import DocumentDetail from "./DocumentDetail";
 import LoadMessage from "../Loading/LoadMessage";
 import LabeledCheckbox from "../Forms/LabeledCheckbox";
+import TokenPagination from "../Util/TokenPagination";
+
+import _ from "lodash";
 
 import { fetchDocuments } from "../../actions";
 
@@ -34,7 +37,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const DocumentList = ({ fetchDocuments, path, documents, title }) => {
+const DocumentList = ({
+  fetchDocuments,
+  path,
+  documents,
+  title,
+  auth: { currentUser },
+}) => {
   const classes = useStyles();
 
   const [page, setPage] = useState(1);
@@ -43,76 +52,16 @@ const DocumentList = ({ fetchDocuments, path, documents, title }) => {
 
   useEffect(() => {
     fetchDocuments({ path, n: itemsPerPage });
+  }, [itemsPerPage, title, currentUser, fetchDocuments, path]);
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [itemsPerPage, title]);
-
-  const onNextPageClick = () => {
-    fetchDocuments({
-      path,
-      n: itemsPerPage,
-      nextPageToken: documents.nextPageToken,
-    });
-    setPage(page + 1);
-  };
-
-  const onPreviousPageClick = () => {
-    fetchDocuments({
-      path,
-      n: itemsPerPage,
-      currPageNum: page,
-    });
-    setPage(page - 1);
-  };
-
-  const renderPages = () => {
-    if (documents.nextPageToken) {
-      var isNextDisabled = false;
-    } else {
-      isNextDisabled = true;
-    }
-
-    const renderPageButtons = () => {
-      const pageNumberDisplay = `Page ${page}`;
-      return (
-        <>
-          <Button variant='outlined' color='primary'>
-            {pageNumberDisplay}
-          </Button>
-        </>
-      );
-    };
-
-    if (!documents.items) {
-      return;
-    }
-    const numResultsDisplay = `${documents.items.length} results`;
-
-    return (
-      <>
-        <Typography>{numResultsDisplay}</Typography>
-        <Button
-          variant='contained'
-          color='primary'
-          disabled={page === 1}
-          onClick={onPreviousPageClick}>
-          Prev
-        </Button>
-        {renderPageButtons()}
-        <Button
-          variant='contained'
-          color='primary'
-          disabled={isNextDisabled}
-          onClick={onNextPageClick}>
-          Next
-        </Button>
-      </>
-    );
-  };
+  if (_.isEmpty(documents)) {
+    return null;
+  }
 
   const renderResultsPerPage = () => {
     const handleChange = (e) => {
       setItemsPerPage(e.target.value);
+      setPage(1);
     };
 
     return (
@@ -130,21 +79,44 @@ const DocumentList = ({ fetchDocuments, path, documents, title }) => {
     );
   };
 
+  const handlePagination = (e, val) => {
+    const prev = () => {
+      fetchDocuments({
+        path,
+        n: itemsPerPage,
+        currPageNum: page,
+      });
+    };
+    const next = () => {
+      fetchDocuments({
+        path,
+        n: itemsPerPage,
+        nextPageToken: documents.nextPageToken,
+      });
+    };
+    val > page ? next() : prev();
+    setPage(val);
+  };
+
+  const renderListOptions = () => {
+    return (
+      <FormGroup row style={{ paddingTop: "5px", paddingBottom: "5px" }}>
+        {renderResultsPerPage()}
+        <TokenPagination
+          page={page}
+          handleChange={handlePagination}
+          hasNext={documents.nextPageToken}
+        />
+      </FormGroup>
+    );
+  };
+
   const renderList = () => {
-    if (!documents) {
-      return <div>No documents</div>;
-    }
-    const { items } = documents;
-
-    if (!items) {
-      return (
-        <div>
-          <LoadMessage color='primary' message='Loading files' />
-        </div>
-      );
+    if (!documents.items.length) {
+      return <Typography>No options!</Typography>;
     }
 
-    return items.map((doc) => {
+    return documents.items.map((doc) => {
       return (
         <ListItem dense={dense} divider key={doc.fullPath}>
           <DocumentDetail doc={doc} />
@@ -156,7 +128,6 @@ const DocumentList = ({ fetchDocuments, path, documents, title }) => {
   return (
     <div className={classes.root}>
       <List className={classes.list}>
-        {renderPages()}
         <FormGroup row>
           <ListSubheader>{title}</ListSubheader>
           <LabeledCheckbox
@@ -164,17 +135,17 @@ const DocumentList = ({ fetchDocuments, path, documents, title }) => {
             checked={dense}
             handleChange={() => setDense(!dense)}
           />
-          {renderList()}
         </FormGroup>
-
-        {renderResultsPerPage()}
+        {renderList()}
       </List>
+      {renderListOptions()}
     </div>
   );
 };
 const mapStateToProps = (state) => {
   return {
     documents: state.documents,
+    auth: state.auth,
   };
 };
 

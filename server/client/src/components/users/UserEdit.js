@@ -35,7 +35,7 @@ const UserEdit = ({
       />
     );
   };
-
+  console.log(user);
   return (
     <>
       <DialogTitle id='simple-dialog-title'>Modify User Info</DialogTitle>

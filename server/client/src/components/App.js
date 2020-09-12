@@ -1,6 +1,5 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Router, Route } from "react-router-dom";
-import { connect } from "react-redux";
 
 import "../components/styling/App.css";
 import { ThemeProvider } from "@material-ui/core/styles";
@@ -16,12 +15,7 @@ import Footer from "./Footer";
 
 import history from "../history";
 
-import { registerAuthListener } from "../actions";
-const App = ({ registerAuthListener }) => {
-  useEffect(() => {
-    registerAuthListener();
-  }, []);
-
+const App = () => {
   return (
     <Router history={history}>
       <ThemeProvider theme={theme}>
@@ -37,4 +31,4 @@ const App = ({ registerAuthListener }) => {
   );
 };
 
-export default connect(null, { registerAuthListener })(App);
+export default App;

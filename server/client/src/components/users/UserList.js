@@ -9,7 +9,6 @@ import LoadMessage from "../Loading/LoadMessage";
 import LabeledCheckbox from "../Forms/LabeledCheckbox";
 
 import { fetchUsers } from "../../actions";
-import useAuthRoute from "../../hooks/useAuthRoute";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -23,27 +22,27 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const UserList = ({ fetchUsers, users }) => {
+const UserList = ({ fetchUsers, users: { allUsers } }) => {
   const classes = useStyles();
 
   const [dense, setDense] = useState(false);
-
-  useAuthRoute();
+  const [allChecked, setAllChecked] = useState(false);
 
   useEffect(() => {
+    // TODO: Make fetch users take in a variable amount of users and have pagination
     fetchUsers(100);
-  }, []);
+  }, [fetchUsers]);
 
   const renderUserList = () => {
-    if (!users || !users.length) {
+    if (!allUsers || !allUsers.length) {
       // TODO: Delay loader by a few seconds
       return <LoadMessage color='primary' message='Loading users' />;
     }
 
-    return users.map((user) => {
+    return allUsers.map((user) => {
       return (
         <ListItem dense={dense} divider key={user.email}>
-          <UserDetail user={user} />
+          <UserDetail user={user} allChecked={allChecked} />
         </ListItem>
       );
     });
@@ -58,6 +57,11 @@ const UserList = ({ fetchUsers, users }) => {
             label='Dense'
             checked={dense}
             handleChange={() => setDense(!dense)}
+          />
+          <LabeledCheckbox
+            label={allChecked ? "Deselect all" : "Select all"}
+            checked={allChecked}
+            handleChange={() => setAllChecked(!allChecked)}
           />
         </FormGroup>
 
