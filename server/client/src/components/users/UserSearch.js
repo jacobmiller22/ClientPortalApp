@@ -19,6 +19,7 @@ const UserSearch = ({
   const renderSearchBar = () => {
     return (
       <Autocomplete
+        clearOnEscape
         onChange={handleChange}
         value={selected}
         options={allUsers}

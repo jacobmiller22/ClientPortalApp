@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
 import { reduxForm, Field } from "redux-form";
 import {
@@ -6,78 +6,148 @@ import {
   DialogTitle,
   DialogContent,
   TextField,
+  DialogActions,
+  DialogContentText,
 } from "@material-ui/core";
+import LabeledCheckbox from "../Forms/LabeledCheckbox";
+
+import { editUser } from "../../actions";
 
 const UserEdit = ({
+  handleClick,
   handleSubmit,
   pristine,
   submitting,
-  user,
-  handleClick,
+  editUser,
 }) => {
   const renderTextField = ({
     label,
     input,
     type,
     meta: { touched, error },
+    ...custom
   }) => {
     const helperText = error && touched ? error : "";
     const showError = touched && error ? true : false;
 
     return (
       <TextField
+        autoFocus={false}
         label={label}
         type={type}
         error={showError}
         helperText={helperText}
         style={{ width: "35ch" }}
-        {...input}
+        InputProps={{ ...input }}
+        {...custom}
       />
     );
   };
-  console.log(user);
+
+  const renderCheckbox = ({ label, input }) => {
+    return (
+      <LabeledCheckbox
+        checked={input.value ? true : false}
+        label={label}
+        handleChange={input.onChange}
+      />
+    );
+  };
+
+  const onSubmit = ({
+    administrator,
+    organization,
+    uid,
+    email,
+    emailVerified,
+    displayName,
+    phoneNumber,
+    disabled,
+  }) => {
+    const user = {
+      customClaims: {
+        administrator,
+        organization,
+      },
+      uid,
+      email,
+      emailVerified,
+      displayName,
+      phoneNumber,
+      disabled,
+    };
+    editUser(user);
+  };
+
   return (
     <>
-      <DialogTitle id='simple-dialog-title'>Modify User Info</DialogTitle>
+      <DialogTitle id='simple-dialog-title'>Edit User</DialogTitle>
       <DialogContent>
-        <Button>Edit Information</Button>
-        <form onSubmit={handleSubmit}>
+        <DialogContentText>Edit this user's information</DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <form onSubmit={handleSubmit(onSubmit)} autoComplete='off'>
           <div>
             <Field
-              name='email'
+              name='displayName'
               component={renderTextField}
-              label='Email'
-              value={user.email}
+              label='Display Name'
+            />
+          </div>
+
+          <div>
+            <Field name='email' component={renderTextField} label='Email' />
+          </div>
+          <div>
+            <Field
+              name='organization'
+              component={renderTextField}
+              label='Organization'
             />
           </div>
           <div>
             <Field
-              name='password'
-              type='password'
+              name='phoneNumber'
               component={renderTextField}
-              label='Password'
+              label='Phone'
             />
           </div>
+          <div>
+            <Field
+              name='administrator'
+              component={renderCheckbox}
+              label='Administrator'
+            />
+          </div>
+
           <div>
             <Button
               type='submit'
               color='primary'
               variant='contained'
-              disabled={pristine || submitting}>
+              disabled={pristine || submitting}
+              onClick={handleClick}>
               Update Credentials
             </Button>
           </div>
         </form>
-        <Button color='primary' variant='contained' onClick={handleClick}>
-          Delete User
-        </Button>
-      </DialogContent>
+      </DialogActions>
     </>
   );
 };
 
-const mapStateToProps = (state, ownProps) => {
-  return { initialValues: ownProps.user };
+const mapStateToProps = (state, { user }) => {
+  const { customClaims } = user;
+  const administrator = customClaims ? customClaims.administrator : null;
+  const organization = customClaims ? customClaims.organization : null;
+
+  return {
+    initialValues: {
+      administrator,
+      organization,
+      ...user,
+    },
+  };
 };
 
 const validate = () => {};
@@ -88,4 +158,4 @@ const wrappedForm = reduxForm({
   enableReinitialize: true,
 })(UserEdit);
 
-export default connect(mapStateToProps)(wrappedForm);
+export default connect(mapStateToProps, { editUser })(wrappedForm);

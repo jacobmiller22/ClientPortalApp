@@ -10,7 +10,7 @@ export const authReducer = (state = {}, action) => {
   }
 };
 
-export const authPermissionsReducer = (state = {}, action) => {
+export const authPermissionsReducer = (state = null, action) => {
   switch (action.type) {
     case USER_PERMISSIONS:
       return action.payload;

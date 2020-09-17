@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
+import { Link } from "react-router-dom";
 
 import {
   Avatar,
@@ -10,12 +11,23 @@ import {
   ListItem,
   ListItemText,
   ListItemIcon,
+  ButtonBase,
 } from "@material-ui/core";
 import SupervisorAccountSharpIcon from "@material-ui/icons/SupervisorAccountSharp";
+import { makeStyles } from "@material-ui/core/styles";
 
 import SignInOut from "./Forms/Authentication/SignInOut";
+import { deepOrange } from "@material-ui/core/colors";
+
+const useStyles = makeStyles((theme) => ({
+  avatar: {
+    color: theme.palette.getContrastText(deepOrange[500]),
+    backgroundColor: deepOrange[500],
+  },
+}));
 
 const UserMenu = (props) => {
+  const classes = useStyles();
   const [open, setOpen] = useState(false);
 
   const { auth } = props;
@@ -25,13 +37,15 @@ const UserMenu = (props) => {
       if (auth.permissions.administrator) {
         return (
           <ListItem>
-            <ListItemIcon>
-              <SupervisorAccountSharpIcon color='primary' />
-            </ListItemIcon>
-            <ListItemText
-              secondary={currentUser.displayName || currentUser.email}>
-              {currentUser.email}
-            </ListItemText>
+            <Link to='/auth/profile' component={ButtonBase}>
+              <ListItemIcon>
+                <SupervisorAccountSharpIcon color='primary' />
+              </ListItemIcon>
+              <ListItemText
+                secondary={currentUser.displayName || currentUser.email}>
+                {currentUser.email}
+              </ListItemText>
+            </Link>
           </ListItem>
         );
       }
@@ -52,18 +66,32 @@ const UserMenu = (props) => {
   return (
     <>
       <Button onClick={() => setOpen(true)} color='inherit'>
-        <Avatar>J</Avatar>
+        <Avatar className={classes.avatar}>J</Avatar>
       </Button>
       <Drawer open={open} onClose={() => setOpen(false)} anchor={"right"}>
         <List>
           {renderUserTitles()}
-
           <Divider />
           <ListItem>
-            <ListItemText>Profile</ListItemText>
+            <ListItemText>
+              <Link to='/documents/upload' component={ButtonBase}>
+                Upload
+              </Link>
+            </ListItemText>
           </ListItem>
           <ListItem>
-            <ListItemText>Help</ListItemText>
+            <ListItemText>
+              <Link to='/documents' component={ButtonBase}>
+                Documents
+              </Link>
+            </ListItemText>
+          </ListItem>
+          <ListItem>
+            <ListItemText>
+              <Link to='/support' component={ButtonBase}>
+                Help
+              </Link>
+            </ListItemText>
           </ListItem>
           <ListItem>
             <ListItemText>

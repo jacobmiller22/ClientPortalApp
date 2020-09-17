@@ -1,5 +1,6 @@
 module.exports = async (req, res, next) => {
   const admin = require("../services/firebaseAdmin.js").createFireBaseAdmin();
+  console.log("Verifying user");
 
   admin
     .auth()
@@ -9,8 +10,9 @@ module.exports = async (req, res, next) => {
       if (decodedToken.administrator) {
         req.sender = decodedToken;
         next();
+      } else {
+        throw "Request madee by unauthorized user";
       }
-      throw "Request made by unauthorized user";
     })
     .catch((error) => {
       console.log(error);

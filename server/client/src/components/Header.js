@@ -38,9 +38,6 @@ function Header(props) {
   };
 
   const renderAdmin = () => {
-    if (!props.permissions) {
-      return null;
-    }
     if (props.permissions.administrator) {
       return (
         <>
@@ -53,6 +50,9 @@ function Header(props) {
   };
 
   const renderToolbar = () => {
+    if (!props.permissions) {
+      return null;
+    }
     return (
       <Toolbar>
         <Button color='inherit' component={Link} to='/'>

@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 
-import { List, ListItem, ListSubheader, FormGroup } from "@material-ui/core";
+import {
+  List,
+  ListItem,
+  ListSubheader,
+  FormGroup,
+  LinearProgress,
+} from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
 import UserDetail from "./UserDetail";
-import LoadMessage from "../Loading/LoadMessage";
 import LabeledCheckbox from "../Forms/LabeledCheckbox";
 
 import { fetchUsers } from "../../actions";
@@ -36,7 +41,7 @@ const UserList = ({ fetchUsers, users: { allUsers } }) => {
   const renderUserList = () => {
     if (!allUsers || !allUsers.length) {
       // TODO: Delay loader by a few seconds
-      return <LoadMessage color='primary' message='Loading users' />;
+      return <LinearProgress />;
     }
 
     return allUsers.map((user) => {

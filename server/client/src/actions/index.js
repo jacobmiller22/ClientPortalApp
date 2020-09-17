@@ -116,38 +116,36 @@ export const fetchUsers = (n) => async (dispatch) => {
   });
 };
 
-export const modifyUserPermissions = (uid, newPermissions) => async (
-  dispatch
-) => {
+export const editUser = (user) => async (dispatch) => {
   const { currentUser } = authRef;
 
   if (!currentUser) return;
 
-  currentUser.getIdTokenResult().then(async (result) => {
-    if (!verifyAuthorization(result.claims)) return;
+  const result = await verifyAuthorization();
 
-    const res = await axios.patch("/api/users", newPermissions, {
+  const res = await axios.patch(
+    "/api/users",
+    { user },
+    {
       headers: {
-        idtoken: result.idToken,
+        idtoken: result.token,
       },
       params: {
-        uid,
+        uid: user.uid,
       },
-    });
+    }
+  );
 
-    dispatch({
-      type: types.MODIFY_USER_PERMISSIONS,
-      payload: res.data,
-    });
+  dispatch({
+    type: types.MODIFY_USER_PERMISSIONS,
+    payload: res.data,
   });
 };
 
 export const createUser = (credentials) => async (dispatch) => {
   const { currentUser } = authRef;
 
-  if (!currentUser) {
-    return;
-  }
+  if (!currentUser) return;
 
   const result = await verifyAuthorization();
 

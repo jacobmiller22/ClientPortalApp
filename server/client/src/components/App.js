@@ -14,6 +14,7 @@ import SignIn from "./Forms/Authentication/SignIn";
 import Footer from "./Footer";
 
 import history from "../history";
+import Profile from "./Auth/Profile";
 
 const App = () => {
   return (
@@ -25,6 +26,7 @@ const App = () => {
         <Route exact path='/documents' component={DocumentManager} />
         <Route exact path='/auth' component={SignIn} />
         <Route exact path='/users' component={UserManager} />
+        <Route exact path='/auth/profile' component={Profile} />
         <Footer />
       </ThemeProvider>
     </Router>

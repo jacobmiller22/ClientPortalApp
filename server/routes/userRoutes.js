@@ -35,49 +35,80 @@ module.exports = (app) => {
       .catch((err) => {
         console.log(err);
         // TODO: change to correct status code
-        return res.status(401).send({ error: err });
+        res.status(401).send({ error: err });
       });
+    res.status(200).send();
   });
 
   app.patch("/api/users", requireAdmin, async (req, res) => {
     // update user settings
-
-    const uid = req.body.uid;
+    console.log("starting to update user");
     const admin = require("../services/firebaseAdmin").createFireBaseAdmin();
+
+    const user = req.body.user;
+    console.log(user);
     admin
       .auth()
-      .getUser(uid)
+      .getUser(user.uid)
       .then((userRecord) => {
         const userInfo = {
+          displayName:
+            typeof user.displayName === undefined
+              ? userRecord.displayName
+              : user.displayName,
           email:
-            typeof req.body.email === undefined
-              ? userRecord.email
-              : req.body.email,
+            typeof user.email === undefined ? userRecord.email : user.email,
           password:
-            typeof req.body.password === undefined
+            typeof user.password === undefined
               ? userRecord.password
-              : req.body.password,
-          emailVerified: false,
-          disabled: false,
+              : user.password,
+          emailVerified:
+            typeof user.emailVerified === undefined
+              ? userRecord.emailVerified
+              : user.emailVerified,
+          disabled:
+            typeof user.disabled === undefined
+              ? userRecord.disabled
+              : user.disabled,
         };
 
         // Update user with settings
+
         admin
           .auth()
-          .updateUser(uid, userInfo)
-          .then((userRecord) => {
-            console.log("Updated user", userRecord.toJSON());
+          .updateUser(user.uid, userInfo)
+          .then(() => {
+            console.log("Updated user");
           })
           .catch((err) => {
             console.log(err);
             // TODO: change to correct status code
             return res.status(401).send({ error: err });
           });
+
+        // Take care of custom claims
+
+        const claims = user.customClaims;
+        console.log(claims);
+        admin
+          .auth()
+          .setCustomUserClaims(user.uid, {
+            administrator: claims.administrator,
+            organization: claims.organization,
+          })
+          .then(() => {
+            console.log("Custom Claims set successfully ");
+          })
+          .catch((error) => {
+            console.log("Error setting custom claims: ", error);
+          });
       })
       .catch((err) => {
         console.log(`Error retrieving user: ${uid}.`, err);
         return res.status(401).send({ error: err });
       });
+
+    res.status(200).send();
   });
 
   app.delete("/api/users", requireAdmin, async (req, res) => {
@@ -97,5 +128,6 @@ module.exports = (app) => {
         // TODO: change to correct status code
         return res.status(401).send({ error: err });
       });
+    res.status(200).send();
   });
 };
